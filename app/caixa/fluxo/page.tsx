@@ -1,3 +1,4 @@
+"use client";
 
 import React from "react";
 import { useFetch } from "../../../hooks/useFetch";

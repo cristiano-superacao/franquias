@@ -1,5 +1,9 @@
+"use client";
 import { useState, useEffect, useCallback, useMemo } from "react";
 
+export function useFetch<T = any>(url: string) {
+  // Removed invalid default export
+  // export default useFetch; // This line has been removed
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

@@ -1,17 +1,15 @@
 
 
+"use client";
 import React, { useState } from "react";
 import dynamic from "next/dynamic";
 import DashboardSidebar from "../../components/DashboardSidebar";
 import { useFetch } from "../../hooks/useFetch";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../api/auth/[...nextauth]/route";
-import { redirect } from "next/navigation";
 
 const KPICards = dynamic(() => import("../../components/KPICards"), { ssr: false });
 const MetasBarChart = dynamic(() => import("../../components/MetasBarChart"), { ssr: false });
 
-export default async function DashboardPage() {
+export default function DashboardPage() {
   const [selectedLoja, setSelectedLoja] = useState<number | null>(null);
   const { data: lojas, loading: loadingLojas } = useFetch<{ id: number; nome: string }[]>("/api/lojas");
   const { data: kpis, loading: loadingKpis } = useFetch<{ label: string; value: string }[]>("/api/kpis");
@@ -56,8 +54,5 @@ export default async function DashboardPage() {
         </button>
       </nav>
     </div>
-    );
-  }
-}
   );
 }

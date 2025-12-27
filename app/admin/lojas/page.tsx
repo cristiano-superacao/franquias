@@ -1,3 +1,4 @@
+"use client";
 
 import React from "react";
 import { useFetch } from "../../../hooks/useFetch";
@@ -33,7 +34,7 @@ export default function AdminLojasPage() {
           {loading ? (
             <div className="text-gray-400">Carregando...</div>
           ) : (
-            lojas.map(loja => (
+            (lojas || []).map(loja => (
               <div key={loja.id} className="bg-gray-900 rounded-xl shadow p-6 border border-gray-800 transition hover:scale-[1.03] hover:border-emerald-500 focus-within:border-emerald-500" tabIndex={0} aria-label={loja.nome}>
                 <h2 className="text-lg font-bold text-emerald-400 mb-2">{loja.nome}</h2>
                 <div className="text-gray-400 mb-2">Meta de Venda: <span className="text-white font-bold">R$ {loja.meta_venda?.toLocaleString() ?? "-"}</span></div>

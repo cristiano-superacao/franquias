@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 1, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/Supera%C3%A7%C3%A3o/Desktop/Sistema/Franquias/Front/styles/globals.css"],"sourcesContent":["@tailwind base;\r\n@tailwind components;\r\n@tailwind utilities;\r\n\r\nbody {\r\n  font-family: 'Inter', sans-serif;\r\n  background: #0f172a;\r\n  color: #fff;\r\n}\r\n\r\n/* Scrollbar customizado para visual moderno */\r\n::-webkit-scrollbar {\r\n  width: 8px;\r\n  background: #1e293b;\r\n}\r\n::-webkit-scrollbar-thumb {\r\n  background: #334155;\r\n  border-radius: 4px;\r\n}\r\n\r\n/* Foco visível acessível */\r\n:focus {\r\n  outline: 2px solid #34d399;\r\n  outline-offset: 2px;\r\n}\r\n"],"names":[],"mappings":"AAAA;;AACA;;AACA;;AAEA;;;;;;AAOA;;;;;AAIA;;;;;AAMA"}}]
+}

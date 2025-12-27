@@ -1,15 +1,25 @@
-import React from "react";
+
+"use client";
+import React, { useState, useEffect } from "react";
 
 export default function EstoqueAlimentosPage() {
-  // Mock de alimentos
   const [alimentos, setAlimentos] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetch("/api/estoque")
       .then(res => res.json())
-        const { data, loading, error } = useFetch<any>("/api/estoque");
-        const alimentos = data?.alimentos || [];
+      .then(data => {
+        setAlimentos(data.alimentos || []);
+        setLoading(false);
+      });
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-gray-950 text-white flex flex-col md:flex-row">
+      <aside className="hidden md:flex flex-col w-64 bg-gray-900 border-r border-gray-800 p-6">
+        <h2 className="font-bold text-lg text-emerald-400 mb-4">Estoque Alimentos</h2>
+        <nav>
           <ul>
             <li>
               <button className="w-full text-left px-4 py-2 rounded-lg transition border-2 border-transparent hover:bg-gray-800 hover:border-emerald-400 hover:text-emerald-400 focus:border-emerald-400 focus:text-emerald-400 active:scale-95 mb-2" aria-label="Entrada" tabIndex={0}>
@@ -30,13 +40,14 @@ export default function EstoqueAlimentosPage() {
           {loading ? (
             <div className="text-gray-400">Carregando...</div>
           ) : (
-            alimentos.map(item => (
-            <div key={item.id} className="bg-gray-900 rounded-xl shadow p-6 border border-gray-800 transition hover:scale-[1.03] hover:border-emerald-500 focus-within:border-emerald-500" tabIndex={0} aria-label={item.nome}>
-              <h2 className="text-lg font-bold text-emerald-400 mb-2">{item.nome}</h2>
-              <div className="text-gray-400 mb-2">Quantidade: <span className="text-white font-bold">{item.quantidade} {item.unidade}</span></div>
-              <button className="mt-4 bg-sky-600 hover:bg-sky-700 text-white font-bold py-2 px-4 rounded shadow transition active:scale-95" aria-label="Registrar Saída">Registrar Saída</button>
-            </div>
-          ))}
+            alimentos.map((item: any) => (
+              <div key={item.id} className="bg-gray-900 rounded-xl shadow p-6 border border-gray-800 transition hover:scale-[1.03] hover:border-emerald-500 focus-within:border-emerald-500" tabIndex={0} aria-label={item.nome}>
+                <h2 className="text-lg font-bold text-emerald-400 mb-2">{item.nome}</h2>
+                <div className="text-gray-400 mb-2">Quantidade: <span className="text-white font-bold">{item.quantidade} {item.unidade}</span></div>
+                <button className="mt-4 bg-sky-600 hover:bg-sky-700 text-white font-bold py-2 px-4 rounded shadow transition active:scale-95" aria-label="Registrar Saída">Registrar Saída</button>
+              </div>
+            ))
+          )}
         </div>
       </main>
       {/* Bottom Bar para mobile */}

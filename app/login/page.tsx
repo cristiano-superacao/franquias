@@ -1,7 +1,10 @@
+
+"use client";
 import { signIn } from "next-auth/react";
 import { useState } from "react";
 import { useToast } from "../../components/Toast";
 
+export default function LoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);

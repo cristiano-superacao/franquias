@@ -1,18 +1,19 @@
-import React from "react";
+
+"use client";
+import React, { useState, useEffect } from "react";
 
 export default function EstoqueLimpezaPage() {
-  // Mock de insumos de limpeza
-    const [insumos, setInsumos] = useState<any[]>([]);
-    const [loading, setLoading] = useState(true);
+  const [insumos, setInsumos] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-      fetch("/api/estoque")
-        .then(res => res.json())
-        .then(data => {
-          setInsumos(data.limpeza);
-          setLoading(false);
-        });
-    }, []);
+  useEffect(() => {
+    fetch("/api/estoque")
+      .then(res => res.json())
+      .then(data => {
+        setInsumos(data.limpeza || []);
+        setLoading(false);
+      });
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-950 text-white flex flex-col md:flex-row">
@@ -36,17 +37,17 @@ export default function EstoqueLimpezaPage() {
       <main className="flex-1 p-6">
         <h1 className="text-2xl font-bold mb-6">Estoque - Limpeza</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {loading ? (
-              <div className="text-gray-400">Carregando...</div>
-            ) : (
-              insumos.map(item => (
-                <div key={item.id} className="bg-gray-900 rounded-xl shadow p-6 border border-gray-800 transition hover:scale-[1.03] hover:border-emerald-500 focus-within:border-emerald-500" tabIndex={0} aria-label={item.nome}>
-                  <h2 className="text-lg font-bold text-emerald-400 mb-2">{item.nome ?? item.categoria}</h2>
-                  <div className="text-gray-400 mb-2">Quantidade: <span className="text-white font-bold">{item.valor ?? "-"} {item.unidade ?? ""}</span></div>
-                  <button className="mt-4 bg-sky-600 hover:bg-sky-700 text-white font-bold py-2 px-4 rounded shadow transition active:scale-95" aria-label="Registrar Saída">Registrar Saída</button>
-                </div>
-              ))
-            )}
+          {loading ? (
+            <div className="text-gray-400">Carregando...</div>
+          ) : (
+            insumos.map((item: any) => (
+              <div key={item.id} className="bg-gray-900 rounded-xl shadow p-6 border border-gray-800 transition hover:scale-[1.03] hover:border-emerald-500 focus-within:border-emerald-500" tabIndex={0} aria-label={item.nome ?? item.categoria}>
+                <h2 className="text-lg font-bold text-emerald-400 mb-2">{item.nome ?? item.categoria}</h2>
+                <div className="text-gray-400 mb-2">Quantidade: <span className="text-white font-bold">{item.valor ?? item.quantidade ?? "-"} {item.unidade ?? ""}</span></div>
+                <button className="mt-4 bg-sky-600 hover:bg-sky-700 text-white font-bold py-2 px-4 rounded shadow transition active:scale-95" aria-label="Registrar Saída">Registrar Saída</button>
+              </div>
+            ))
+          )}
         </div>
       </main>
       {/* Bottom Bar para mobile */}

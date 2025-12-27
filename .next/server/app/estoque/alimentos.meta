@@ -1,0 +1,16 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/estoque/layout,_N_T_/estoque/alimentos/layout,_N_T_/estoque/alimentos/page,_N_T_/estoque/alimentos"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/estoque/alimentos/__PAGE__",
+    "/estoque/alimentos",
+    "/estoque",
+    "/_index",
+    "/_head"
+  ]
+}
