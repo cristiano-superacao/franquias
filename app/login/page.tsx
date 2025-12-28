@@ -1,7 +1,7 @@
 "use client";
-import { signIn } from "next-auth/react";
 import { useState } from "react";
 import { useToast } from "../../components/Toast";
+import { login } from "../../lib/auth";
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
@@ -12,14 +12,21 @@ export default function LoginPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
-    const res = await signIn("credentials", {
-      redirect: false,
-      username,
-      password
-    });
+    
+    // Simula delay de rede
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    const user = login(username, password);
     setLoading(false);
-    if (res?.error) showToast("Usuário ou senha inválidos", "error");
-    if (res?.ok && !res.error) window.location.href = "/";
+    
+    if (!user) {
+      showToast("Usuário ou senha inválidos", "error");
+    } else {
+      showToast("Login realizado com sucesso!", "success");
+      setTimeout(() => {
+        window.location.href = "/dashboard";
+      }, 300);
+    }
   }
 
   return (

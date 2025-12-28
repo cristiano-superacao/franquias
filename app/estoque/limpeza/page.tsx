@@ -1,9 +1,15 @@
 
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { useFetch } from "../../../hooks/useFetch";
+import { getSession } from "../../../lib/auth";
 
 export default function EstoqueLimpezaPage() {
+  // Verifica autenticação
+  useEffect(() => {
+    const session = getSession();
+    if (!session) window.location.href = "/login";
+  }, []);
   const { data, loading, error } = useFetch<{ limpeza: any[] }>("/api/estoque");
   const insumos = data?.limpeza || [];
 

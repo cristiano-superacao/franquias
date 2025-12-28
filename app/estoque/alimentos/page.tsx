@@ -1,9 +1,16 @@
 
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { useFetch } from "../../../hooks/useFetch";
+import { getSession } from "../../../lib/auth";
 
 export default function EstoqueAlimentosPage() {
+  // Verifica autenticação
+  useEffect(() => {
+    const session = getSession();
+    if (!session) window.location.href = "/login";
+  }, []);
+
   const { data, loading, error } = useFetch<{ alimentos: any[] }>("/api/estoque");
   const alimentos = data?.alimentos || [];
 

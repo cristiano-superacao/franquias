@@ -1,10 +1,18 @@
 
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { useFetch } from "../../../hooks/useFetch";
 import { formatCurrency, formatPercent } from "../../../lib/format";
+import { getSession } from "../../../lib/auth";
 
-export default function ConfigComissoesPage() {
+export default function ComissoesPage() {
+  // Verifica autenticação
+  useEffect(() => {
+    const session = getSession();
+    if (!session) {
+      window.location.href = "/login";
+    }
+  }, []);
   const { data: faixas = [], loading, error } = useFetch<any[]>("/api/comissoes");
 
   return (

@@ -15,7 +15,6 @@
     "start": "next start"
   },
   "dependencies": {
-    "next-auth": "^4.24.13",
     "recharts": "^3.6.0"
   }
 }

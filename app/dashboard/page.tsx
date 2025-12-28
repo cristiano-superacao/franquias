@@ -1,14 +1,26 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import DashboardSidebar from "../../components/DashboardSidebar";
 import { useFetch } from "../../hooks/useFetch";
+import { getSession, logout } from "../../lib/auth";
 
 const KPICards = dynamic(() => import("../../components/KPICards"), { ssr: false });
 const MetasBarChart = dynamic(() => import("../../components/MetasBarChart"), { ssr: false });
 
 export default function DashboardPage() {
   const [selectedLoja, setSelectedLoja] = useState<number | null>(null);
+  const [user, setUser] = useState<{ username: string; role: string } | null>(null);
+
+  // Verifica autenticação
+  useEffect(() => {
+    const session = getSession();
+    if (!session) {
+      window.location.href = "/login";
+      return;
+    }
+    setUser(session);
+  }, []);
   const { data: lojas, loading: loadingLojas } = useFetch<{ id: number; nome: string }[]>("/api/lojas");
 
   const lojaParam = selectedLoja ? `?lojaId=${selectedLoja}` : "";
@@ -24,7 +36,21 @@ export default function DashboardPage() {
       />
       <main className="flex-1 p-6 pb-20 md:pb-6">
         <div className="mx-auto w-full max-w-6xl">
-          <h1 className="text-2xl font-bold mb-6">Dashboard Super Admin</h1>
+          <div className="flex justify-between items-center mb-6">
+            <h1 className="text-2xl font-bold">Dashboard Super Admin</h1>
+            {user && (
+              <div className="flex items-center gap-4">
+                <span className="text-sm text-gray-400">Olá, {user.username}</span>
+                <button
+                  onClick={() => { logout(); window.location.href = "/login"; }}
+                  className="bg-gray-800 hover:bg-gray-700 text-white text-sm py-2 px-4 rounded transition"
+                  aria-label="Sair"
+                >
+                  Sair
+                </button>
+              </div>
+            )}
+          </div>
           {loadingKpis ? (
             <div className="text-gray-400">Carregando KPIs...</div>
           ) : (

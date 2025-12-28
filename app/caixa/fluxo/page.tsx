@@ -1,10 +1,17 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useFetch } from "../../../hooks/useFetch";
 import { formatCurrency } from "../../../lib/format";
+import { getSession } from "../../../lib/auth";
 
 export default function CaixaFluxoPage() {
+  // Verifica autenticação
+  useEffect(() => {
+    const session = getSession();
+    if (!session) window.location.href = "/login";
+  }, []);
+
   const { data: movimentacoes, loading, error } = useFetch<any[]>("/api/movimentacoes");
 
   return (
