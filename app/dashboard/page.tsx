@@ -10,8 +10,10 @@ const MetasBarChart = dynamic(() => import("../../components/MetasBarChart"), { 
 export default function DashboardPage() {
   const [selectedLoja, setSelectedLoja] = useState<number | null>(null);
   const { data: lojas, loading: loadingLojas } = useFetch<{ id: number; nome: string }[]>("/api/lojas");
-  const { data: kpis, loading: loadingKpis } = useFetch<{ label: string; value: string }[]>("/api/kpis");
-  const { data: metasData, loading: loadingMetas } = useFetch<{ nome: string; meta: number; realizado: number }[]>("/api/metas");
+
+  const lojaParam = selectedLoja ? `?lojaId=${selectedLoja}` : "";
+  const { data: kpis, loading: loadingKpis } = useFetch<{ label: string; value: string }[]>(`/api/kpis${lojaParam}`);
+  const { data: metasData, loading: loadingMetas } = useFetch<{ nome: string; meta: number; realizado: number }[]>(`/api/metas${lojaParam}`);
 
   return (
     <div className="min-h-screen bg-gray-950 text-white flex flex-col md:flex-row">

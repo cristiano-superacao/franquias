@@ -2,6 +2,7 @@
 
 import React from "react";
 import { useFetch } from "../../../hooks/useFetch";
+import { formatCurrency } from "../../../lib/format";
 
 export default function CaixaFluxoPage() {
   const { data: movimentacoes, loading, error } = useFetch<any[]>("/api/movimentacoes");
@@ -47,8 +48,8 @@ export default function CaixaFluxoPage() {
                   <tr key={mov.id} className="transition hover:bg-gray-800 focus-within:bg-gray-800">
                     <td className={mov.tipo === "entrada" ? "text-emerald-400 px-4 py-2" : "text-red-400 px-4 py-2"}>{mov.tipo}</td>
                     <td className="px-4 py-2">{mov.categoria}</td>
-                    <td className="px-4 py-2 font-bold">R$ {mov.valor?.toLocaleString() ?? "-"}</td>
-                    <td className="px-4 py-2">{new Date(mov.data).toLocaleString()}</td>
+                    <td className="px-4 py-2 font-bold">{formatCurrency(mov.valor)}</td>
+                    <td className="px-4 py-2">{mov.data ? new Date(mov.data).toLocaleString() : "-"}</td>
                   </tr>
                 ))
               )}

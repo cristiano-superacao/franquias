@@ -2,6 +2,7 @@
 "use client";
 import React from "react";
 import { useFetch } from "../../../hooks/useFetch";
+import { formatCurrency, formatPercent } from "../../../lib/format";
 
 export default function ConfigComissoesPage() {
   const { data: faixas = [], loading, error } = useFetch<any[]>("/api/comissoes");
@@ -41,8 +42,8 @@ export default function ConfigComissoesPage() {
                 (faixas || []).map((faixa: any, idx: number) => (
                   <tr key={idx}>
                     <td className="px-4 py-2">{faixa.loja ?? faixa.nome}</td>
-                    <td className="px-4 py-2">{faixa.faixa ?? faixa.porcentagem_comissao ?? "-"}%</td>
-                    <td className="px-4 py-2">{faixa.volume ?? (faixa.meta_venda ? `R$ ${faixa.meta_venda.toLocaleString()}` : "-")}</td>
+                    <td className="px-4 py-2">{faixa.faixa ? String(faixa.faixa) : formatPercent(faixa.porcentagem_comissao)}</td>
+                    <td className="px-4 py-2">{faixa.volume ?? formatCurrency(faixa.meta_venda)}</td>
                     <td className="px-4 py-2">
                       <button className="text-emerald-400 hover:underline">Editar</button>
                     </td>

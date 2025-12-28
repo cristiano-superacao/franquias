@@ -2,6 +2,7 @@
 
 import React from "react";
 import { useFetch } from "../../../hooks/useFetch";
+import { formatCurrency, formatPercent } from "../../../lib/format";
 
 export default function AdminLojasPage() {
   const { data: lojas, loading, error } = useFetch<any[]>("/api/lojas");
@@ -38,8 +39,8 @@ export default function AdminLojasPage() {
               (lojas || []).map(loja => (
                 <div key={loja.id} className="bg-gray-900 rounded-xl shadow p-6 border border-gray-800 transition hover:scale-[1.03] hover:border-emerald-500 focus-within:border-emerald-500" tabIndex={0} aria-label={loja.nome}>
                   <h2 className="text-lg font-bold text-emerald-400 mb-2">{loja.nome}</h2>
-                  <div className="text-gray-400 mb-2">Meta de Venda: <span className="text-white font-bold">R$ {loja.meta_venda?.toLocaleString() ?? "-"}</span></div>
-                  <div className="text-gray-400 mb-2">Comissão: <span className="text-white font-bold">{loja.porcentagem_comissao ?? "-"}%</span></div>
+                  <div className="text-gray-400 mb-2">Meta de Venda: <span className="text-white font-bold">{formatCurrency(loja.meta_venda)}</span></div>
+                  <div className="text-gray-400 mb-2">Comissão: <span className="text-white font-bold">{formatPercent(loja.porcentagem_comissao)}</span></div>
                   <button className="mt-4 bg-sky-600 hover:bg-sky-700 text-white font-bold py-2 px-4 rounded shadow transition active:scale-95" aria-label="Editar Loja">Editar</button>
                 </div>
               ))

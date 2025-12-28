@@ -1,19 +1,11 @@
 
 "use client";
-import React, { useState, useEffect } from "react";
+import React from "react";
+import { useFetch } from "../../../hooks/useFetch";
 
 export default function EstoqueAlimentosPage() {
-  const [alimentos, setAlimentos] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetch("/api/estoque")
-      .then(res => res.json())
-      .then(data => {
-        setAlimentos(data.alimentos || []);
-        setLoading(false);
-      });
-  }, []);
+  const { data, loading, error } = useFetch<{ alimentos: any[] }>("/api/estoque");
+  const alimentos = data?.alimentos || [];
 
   return (
     <div className="min-h-screen bg-gray-950 text-white flex flex-col md:flex-row">
@@ -39,6 +31,8 @@ export default function EstoqueAlimentosPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {loading ? (
             <div className="text-gray-400">Carregando...</div>
+          ) : error ? (
+            <div className="text-red-400">Erro ao carregar estoque</div>
           ) : (
             alimentos.map((item: any) => (
               <div key={item.id} className="bg-gray-900 rounded-xl shadow p-6 border border-gray-800 transition hover:scale-[1.03] hover:border-emerald-500 focus-within:border-emerald-500" tabIndex={0} aria-label={item.nome}>
