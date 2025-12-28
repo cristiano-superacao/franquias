@@ -1,5 +1,3 @@
-
-
 "use client";
 import React, { useState } from "react";
 import dynamic from "next/dynamic";
@@ -22,20 +20,22 @@ export default function DashboardPage() {
         selectedLoja={selectedLoja}
         onSelectLoja={setSelectedLoja}
       />
-      <main className="flex-1 p-6 md:ml-64 pb-20 container">
-        <h1 className="text-2xl font-bold mb-6">Dashboard Super Admin</h1>
-        {loadingKpis ? (
-          <div className="text-gray-400">Carregando KPIs...</div>
-        ) : (
-          <KPICards kpis={kpis || []} />
-        )}
-        {loadingMetas ? (
-          <div className="text-gray-400">Carregando Metas...</div>
-        ) : (
-          <MetasBarChart data={metasData || []} />
-        )}
-        <div className="mt-8 flex justify-end">
-          <button className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-6 rounded shadow transition">Backup Banco</button>
+      <main className="flex-1 p-6 pb-20 md:pb-6">
+        <div className="mx-auto w-full max-w-6xl">
+          <h1 className="text-2xl font-bold mb-6">Dashboard Super Admin</h1>
+          {loadingKpis ? (
+            <div className="text-gray-400">Carregando KPIs...</div>
+          ) : (
+            <KPICards kpis={kpis || []} />
+          )}
+          {loadingMetas ? (
+            <div className="text-gray-400">Carregando Metas...</div>
+          ) : (
+            <MetasBarChart data={metasData || []} />
+          )}
+          <div className="mt-8 flex justify-end">
+            <button className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-6 rounded shadow transition">Backup Banco</button>
+          </div>
         </div>
       </main>
       {/* Bottom Bar para mobile */}

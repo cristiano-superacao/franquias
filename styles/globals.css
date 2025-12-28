@@ -2,26 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: 'Inter', sans-serif;
-  background: #0f172a;
-  color: #fff;
-}
+@layer base {
+  body {
+    @apply bg-gray-950 text-white;
+  }
 
-/* Scrollbar customizado para visual moderno */
-::-webkit-scrollbar {
-  width: 8px;
-  background: #1e293b;
-}
-::-webkit-scrollbar-thumb {
-  background: #334155;
-  border-radius: 4px;
-}
-
-/* Foco visível acessível */
-:focus {
-  outline: 2px solid #34d399;
-  outline-offset: 2px;
+  /* Foco visível acessível */
+  :focus-visible {
+    @apply outline-2 outline-emerald-400 outline-offset-2;
+  }
 }
 
 /* Ajustes responsivos baseados em tamanho de tela para melhor legibilidade */
@@ -39,13 +28,4 @@ html {
   html {
     font-size: 14px;
   }
-}
-
-/* Classe utilitária de container para layouts centrados */
-.container {
-  max-width: 1200px;
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: 1rem;
-  padding-right: 1rem;
 }

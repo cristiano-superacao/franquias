@@ -1,0 +1,1 @@
+@tailwind base;@tailwind components;@tailwind utilities;@layer base{@apply bg-gray-950 text-white;@apply outline-2 outline-emerald-400 outline-offset-2;}html{font-size:16px}@media (max-width:640px){html{font-size:15px}}@media (max-width:420px){html{font-size:14px}}

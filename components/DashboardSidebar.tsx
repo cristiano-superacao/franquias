@@ -24,10 +24,8 @@ export default function DashboardSidebar({ lojas, selectedLoja, onSelectLoja }: 
         className={`bg-gray-900 text-white flex flex-col shadow-lg z-20 transition-all duration-300
           fixed top-0 left-0 h-full w-64 md:relative md:w-64 md:h-auto md:shadow-none
           ${open ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}
-        style={{ boxShadow: open ? "0 0 0 9999px rgba(0,0,0,0.5)" : undefined }}
         role="navigation"
         aria-label="Sidebar de lojas"
-        aria-hidden={open ? "false" : "true"}
       >
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-800">
           <span className="font-bold text-lg text-emerald-400">Lojas</span>

@@ -28,21 +28,23 @@ export default function AdminLojasPage() {
           </ul>
         </nav>
       </aside>
-      <main className="flex-1 p-6 container">
-        <h1 className="text-2xl font-bold mb-6">Gestão de Lojas</h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {loading ? (
-            <div className="text-gray-400">Carregando...</div>
-          ) : (
-            (lojas || []).map(loja => (
-              <div key={loja.id} className="bg-gray-900 rounded-xl shadow p-6 border border-gray-800 transition hover:scale-[1.03] hover:border-emerald-500 focus-within:border-emerald-500" tabIndex={0} aria-label={loja.nome}>
-                <h2 className="text-lg font-bold text-emerald-400 mb-2">{loja.nome}</h2>
-                <div className="text-gray-400 mb-2">Meta de Venda: <span className="text-white font-bold">R$ {loja.meta_venda?.toLocaleString() ?? "-"}</span></div>
-                <div className="text-gray-400 mb-2">Comissão: <span className="text-white font-bold">{loja.porcentagem_comissao ?? "-"}%</span></div>
-                <button className="mt-4 bg-sky-600 hover:bg-sky-700 text-white font-bold py-2 px-4 rounded shadow transition active:scale-95" aria-label="Editar Loja">Editar</button>
-              </div>
-            ))
-          )}
+      <main className="flex-1 p-6 pb-20 md:pb-6">
+        <div className="mx-auto w-full max-w-6xl">
+          <h1 className="text-2xl font-bold mb-6">Gestão de Lojas</h1>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {loading ? (
+              <div className="text-gray-400">Carregando...</div>
+            ) : (
+              (lojas || []).map(loja => (
+                <div key={loja.id} className="bg-gray-900 rounded-xl shadow p-6 border border-gray-800 transition hover:scale-[1.03] hover:border-emerald-500 focus-within:border-emerald-500" tabIndex={0} aria-label={loja.nome}>
+                  <h2 className="text-lg font-bold text-emerald-400 mb-2">{loja.nome}</h2>
+                  <div className="text-gray-400 mb-2">Meta de Venda: <span className="text-white font-bold">R$ {loja.meta_venda?.toLocaleString() ?? "-"}</span></div>
+                  <div className="text-gray-400 mb-2">Comissão: <span className="text-white font-bold">{loja.porcentagem_comissao ?? "-"}%</span></div>
+                  <button className="mt-4 bg-sky-600 hover:bg-sky-700 text-white font-bold py-2 px-4 rounded shadow transition active:scale-95" aria-label="Editar Loja">Editar</button>
+                </div>
+              ))
+            )}
+          </div>
         </div>
       </main>
       {/* Bottom Bar para mobile */}
