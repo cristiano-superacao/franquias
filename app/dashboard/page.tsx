@@ -22,7 +22,7 @@ export default function DashboardPage() {
         selectedLoja={selectedLoja}
         onSelectLoja={setSelectedLoja}
       />
-      <main className="flex-1 p-6 md:ml-64 pb-20">
+      <main className="flex-1 p-6 md:ml-64 pb-20 container">
         <h1 className="text-2xl font-bold mb-6">Dashboard Super Admin</h1>
         {loadingKpis ? (
           <div className="text-gray-400">Carregando KPIs...</div>
