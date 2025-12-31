@@ -1,11 +1,13 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useFetch } from "../../../hooks/useFetch";
 import { formatCurrency } from "../../../lib/format";
 import { getSession } from "../../../lib/auth";
 import DashboardLayout from "../../../components/DashboardLayout";
 import { SkeletonTable } from "../../../components/SkeletonTable";
+import NFModal from "../../../components/NFModal";
+import { useToast } from "../../../components/Toast";
 
 export default function CaixaFluxoPage() {
   // Verifica autenticação
@@ -15,6 +17,14 @@ export default function CaixaFluxoPage() {
   }, []);
 
   const { data: movimentacoes, loading, error } = useFetch<any[]>("/api/movimentacoes");
+  const [showModal, setShowModal] = useState(false);
+  const { showToast } = useToast();
+
+  function handleNFSuccess() {
+    showToast("Movimentação lançada com sucesso!", "success");
+    setShowModal(false);
+    setTimeout(() => window.location.reload(), 300);
+  }
 
   return (
     <DashboardLayout>
@@ -37,7 +47,7 @@ export default function CaixaFluxoPage() {
             <tbody>
               {movimentacoes.map(mov => (
                 <tr key={mov.id} className="transition hover:bg-gray-800 focus-within:bg-gray-800">
-                  <td className={mov.tipo === "entrada" ? "text-emerald-400 px-4 py-2" : "text-red-400 px-4 py-2"}>{mov.tipo}</td>
+                  <td className={mov.tipo === "entrada" ? "text-blue-400 px-4 py-2" : "text-red-400 px-4 py-2"}>{mov.tipo}</td>
                   <td className="px-4 py-2">{mov.categoria}</td>
                   <td className="px-4 py-2 font-bold">{formatCurrency(mov.valor)}</td>
                   <td className="px-4 py-2">{mov.data ? new Date(mov.data).toLocaleString() : "-"}</td>
@@ -51,7 +61,8 @@ export default function CaixaFluxoPage() {
           <p className="text-gray-400">Nenhuma movimentação encontrada.</p>
         </div>
       ))}
-      <button className="mt-8 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-6 rounded shadow transition active:scale-95" aria-label="Nova Movimentação">Nova Movimentação</button>
+      <button onClick={() => setShowModal(true)} className="mt-8 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded shadow transition active:scale-95" aria-label="Nova Movimentação">Nova Movimentação</button>
+      {showModal && <NFModal open={showModal} onClose={() => setShowModal(false)} onSuccess={handleNFSuccess} />}
     </DashboardLayout>
   );
 }

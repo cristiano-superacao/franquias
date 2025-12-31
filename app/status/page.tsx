@@ -35,13 +35,13 @@ export default function StatusPage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
             <div className="bg-gray-900 rounded-lg p-4">
               <div className="text-gray-400">Postgres</div>
-              <div className="text-emerald-400 font-bold">Conectado</div>
+              <div className="text-blue-400 font-bold">Conectado</div>
             </div>
             <div className="bg-gray-900 rounded-lg p-4">
               <div className="text-gray-400">Variáveis</div>
               <div className="flex items-center gap-2 text-sm mt-2">
-                <span className={`px-2 py-1 rounded ${data.env?.databaseUrl ? 'bg-emerald-500/20 text-emerald-300' : 'bg-red-500/20 text-red-300'}`}>DATABASE_URL</span>
-                <span className={`px-2 py-1 rounded ${data.env?.railwayDatabaseUrl ? 'bg-emerald-500/20 text-emerald-300' : 'bg-red-500/20 text-red-300'}`}>RAILWAY_DATABASE_URL</span>
+                <span className={`px-2 py-1 rounded ${data.env?.databaseUrl ? 'bg-blue-500/20 text-blue-300' : 'bg-red-500/20 text-red-300'}`}>DATABASE_URL</span>
+                <span className={`px-2 py-1 rounded ${data.env?.railwayDatabaseUrl ? 'bg-blue-500/20 text-blue-300' : 'bg-red-500/20 text-red-300'}`}>RAILWAY_DATABASE_URL</span>
                 <span className="px-2 py-1 rounded bg-slate-500/20 text-slate-300">NODE_ENV: {data.env?.nodeEnv || '-'}</span>
               </div>
             </div>
@@ -68,7 +68,7 @@ export default function StatusPage() {
           </div>
 
           {data.env?.allowDbSync ? (
-            <button onClick={doSync} disabled={syncing} className="px-4 py-2 rounded bg-emerald-600 hover:bg-emerald-700 text-white disabled:opacity-60">
+            <button onClick={doSync} disabled={syncing} className="px-4 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-60">
               {syncing ? 'Sincronizando...' : 'Sincronizar banco (migrate/db push)'}
             </button>
           ) : (

@@ -6,9 +6,10 @@ import { useFetch } from "../hooks/useFetch";
 type NFModalProps = {
   open: boolean;
   onClose: () => void;
+  onSuccess?: () => void;
 };
 
-export default function NFModal({ open, onClose }: NFModalProps) {
+export default function NFModal({ open, onClose, onSuccess }: NFModalProps) {
   const { showToast } = useToast();
   const { data: lojas } = useFetch<{ id: number; nome: string }[]>("/api/lojas");
 
@@ -90,6 +91,7 @@ export default function NFModal({ open, onClose }: NFModalProps) {
       }
       showToast("NF lançada com sucesso!", "success");
       resetForm();
+      if (onSuccess) onSuccess();
       onClose();
     } catch {
       showToast("Erro ao salvar NF", "error");
@@ -128,7 +130,7 @@ export default function NFModal({ open, onClose }: NFModalProps) {
               type="text"
               value={numero}
               onChange={(e) => setNumero(e.target.value)}
-              className="px-4 py-2 rounded bg-gray-800 border border-gray-700 focus:outline-none focus:border-emerald-400 text-white"
+              className="px-4 py-2 rounded bg-gray-800 border border-gray-700 focus:outline-none focus:border-blue-400 text-white"
               required
             />
           </label>
@@ -138,7 +140,7 @@ export default function NFModal({ open, onClose }: NFModalProps) {
               type="date"
               value={dataEmissao}
               onChange={(e) => setDataEmissao(e.target.value)}
-              className="px-4 py-2 rounded bg-gray-800 border border-gray-700 focus:outline-none focus:border-emerald-400 text-white"
+              className="px-4 py-2 rounded bg-gray-800 border border-gray-700 focus:outline-none focus:border-blue-400 text-white"
               required
             />
           </label>
@@ -150,7 +152,7 @@ export default function NFModal({ open, onClose }: NFModalProps) {
               min="0"
               value={valor}
               onChange={(e) => setValor(e.target.value)}
-              className="px-4 py-2 rounded bg-gray-800 border border-gray-700 focus:outline-none focus:border-emerald-400 text-white"
+              className="px-4 py-2 rounded bg-gray-800 border border-gray-700 focus:outline-none focus:border-blue-400 text-white"
               required
             />
           </label>
@@ -159,7 +161,7 @@ export default function NFModal({ open, onClose }: NFModalProps) {
             <select
               value={categoria}
               onChange={(e) => setCategoria(e.target.value)}
-              className="px-4 py-2 rounded bg-gray-800 border border-gray-700 focus:outline-none focus:border-emerald-400 text-white"
+              className="px-4 py-2 rounded bg-gray-800 border border-gray-700 focus:outline-none focus:border-blue-400 text-white"
             >
               <option>Compra</option>
               <option>Venda</option>
@@ -171,7 +173,7 @@ export default function NFModal({ open, onClose }: NFModalProps) {
             <select
               value={lojaId === "" ? "" : String(lojaId)}
               onChange={(e) => setLojaId(e.target.value ? Number(e.target.value) : "")}
-              className="px-4 py-2 rounded bg-gray-800 border border-gray-700 focus:outline-none focus:border-emerald-400 text-white"
+              className="px-4 py-2 rounded bg-gray-800 border border-gray-700 focus:outline-none focus:border-blue-400 text-white"
             >
               <option value="">Consolidado</option>
               {(lojas || []).map((l) => (
@@ -181,7 +183,7 @@ export default function NFModal({ open, onClose }: NFModalProps) {
           </label>
           <div className="flex justify-end gap-3 mt-2">
             <button type="button" onClick={onClose} className="bg-gray-800 hover:bg-gray-700 text-white py-2 px-4 rounded">Cancelar</button>
-            <button type="submit" className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded">Lançar</button>
+            <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Lançar</button>
           </div>
         </form>
       </div>

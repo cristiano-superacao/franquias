@@ -19,7 +19,7 @@ type MetasBarChartProps = {
 const MetasBarChart: React.FC<MetasBarChartProps> = React.memo(function MetasBarChart({ data }) {
   const hasData = data && data.length > 0;
   return (
-    <div className="bg-gray-900 rounded-xl shadow p-6 border border-gray-800 transition hover:scale-[1.01] hover:border-sky-500 focus-within:border-sky-500" tabIndex={0} aria-label="Gráfico de Metas por Unidade">
+    <div className="bg-gray-900 rounded-xl shadow p-6 border border-gray-800 transition hover:scale-[1.01] hover:border-blue-500 focus-within:border-blue-500" tabIndex={0} aria-label="Gráfico de Metas por Unidade">
       <h2 className="text-lg font-bold text-white mb-4">Metas por Unidade</h2>
       {hasData ? (
         <ResponsiveContainer width="100%" height={300}>

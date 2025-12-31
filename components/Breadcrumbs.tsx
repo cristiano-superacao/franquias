@@ -43,7 +43,7 @@ export default function Breadcrumbs() {
       {/* Mobile: colapsa intermediários (Início > … > Último) */}
       <ol className="flex items-center gap-2 text-gray-400 sm:hidden">
         <li className="flex items-center">
-          <Link href="/dashboard" className="hover:text-emerald-300 flex items-center gap-1">
+          <Link href="/dashboard" className="hover:text-blue-400 flex items-center gap-1">
             <span className="sr-only">Ir para</span>
             <span>Início</span>
           </Link>
@@ -59,7 +59,7 @@ export default function Breadcrumbs() {
             {crumbs.length > 2 && <Chevron />}
             <li>
               {crumbs.length > 1 && (
-                <Link href={crumbs[crumbs.length - 2].href} className="hover:text-emerald-300">
+                <Link href={crumbs[crumbs.length - 2].href} className="hover:text-blue-400">
                   {crumbs[crumbs.length - 2].label}
                 </Link>
               )}
@@ -77,7 +77,7 @@ export default function Breadcrumbs() {
       {/* Desktop: mostra todos os níveis */}
       <ol className="hidden sm:flex items-center gap-2 text-gray-400">
         <li className="flex items-center">
-          <Link href="/dashboard" className="hover:text-emerald-300 flex items-center gap-1">
+          <Link href="/dashboard" className="hover:text-blue-400 flex items-center gap-1">
             <span className="sr-only">Ir para</span>
             <span>Início</span>
           </Link>
@@ -89,7 +89,7 @@ export default function Breadcrumbs() {
               {i < crumbs.length - 1 ? (
                 <Link
                   href={c.href}
-                  className="hover:text-emerald-300 block truncate max-w-[12rem]"
+                  className="hover:text-blue-400 block truncate max-w-[12rem]"
                   title={c.label}
                 >
                   {c.label}
