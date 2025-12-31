@@ -41,3 +41,17 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Falha ao criar lançamento" }, { status: 500 });
   }
 }
+
+export async function DELETE(req: Request) {
+  try {
+    const url = new URL(req.url);
+    const idParam = url.searchParams.get("id");
+    const id = idParam ? Number(idParam) : null;
+    if (!id) return NextResponse.json({ error: "ID inválido" }, { status: 400 });
+
+    await prisma.lancamentoFinanceiro.delete({ where: { id } });
+    return NextResponse.json({ ok: true });
+  } catch (err) {
+    return NextResponse.json({ error: "Falha ao remover lançamento" }, { status: 500 });
+  }
+}

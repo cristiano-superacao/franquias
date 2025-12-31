@@ -43,3 +43,39 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Falha ao criar item" }, { status: 500 });
   }
 }
+
+export async function PUT(req: Request) {
+  try {
+    const body = await req.json();
+    const id = Number(body?.id);
+    const nome = body?.nome !== undefined ? String(body.nome).trim() : undefined;
+    const quantidade = body?.quantidade !== undefined ? Number(body.quantidade) : undefined;
+    const unidade = body?.unidade !== undefined ? String(body.unidade).trim() : undefined;
+
+    if (!id) return NextResponse.json({ error: "ID inválido" }, { status: 400 });
+
+    const data: any = {};
+    if (nome !== undefined) data.nome = nome;
+    if (quantidade !== undefined) data.quantidade = quantidade;
+    if (unidade !== undefined) data.unidade = unidade;
+
+    const updated = await prisma.itemEstoque.update({ where: { id }, data });
+    return NextResponse.json({ ok: true, item: updated });
+  } catch (err) {
+    return NextResponse.json({ error: "Falha ao atualizar item" }, { status: 500 });
+  }
+}
+
+export async function DELETE(req: Request) {
+  try {
+    const url = new URL(req.url);
+    const idParam = url.searchParams.get("id");
+    const id = idParam ? Number(idParam) : null;
+    if (!id) return NextResponse.json({ error: "ID inválido" }, { status: 400 });
+
+    await prisma.itemEstoque.delete({ where: { id } });
+    return NextResponse.json({ ok: true });
+  } catch (err) {
+    return NextResponse.json({ error: "Falha ao remover item" }, { status: 500 });
+  }
+}
