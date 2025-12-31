@@ -24,6 +24,14 @@ export default function EstoqueLimpezaPage() {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editNome, setEditNome] = useState<string>("");
   const [editUnidade, setEditUnidade] = useState<string>("un");
+  // Filtros e paginação
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 9;
+  const filtered = insumos.filter((i: any) => (i.nome ?? i.categoria)?.toLowerCase().includes(search.toLowerCase()));
+  const totalPages = Math.max(1, Math.ceil(filtered.length / itemsPerPage));
+  const pageItems = filtered.slice((page - 1) * itemsPerPage, page * itemsPerPage);
+  React.useEffect(() => { setPage(1); }, [search, insumos.length]);
 
   useEffect(() => {
     const raw = typeof window !== "undefined" ? window.localStorage.getItem("selectedLojaId") : null;
@@ -128,6 +136,18 @@ export default function EstoqueLimpezaPage() {
     <DashboardLayout>
       <h1 className="text-2xl font-bold mb-6">Estoque - Limpeza</h1>
 
+      {/* Filtro de busca */}
+      <div className="mb-4 grid grid-cols-1 md:grid-cols-3 gap-3">
+        <input
+          type="text"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Buscar por nome ou categoria"
+          className="rounded-md border border-gray-700 bg-gray-800 px-3 py-2 text-white focus:border-blue-600 focus:ring-blue-600"
+          aria-label="Buscar item"
+        />
+      </div>
+
       {/* Formulário de criação */}
       <form onSubmit={handleAdicionarItem} className="mb-6 grid grid-cols-1 md:grid-cols-5 gap-3 bg-gray-900 border border-gray-800 rounded-xl p-4">
         <input
@@ -168,8 +188,8 @@ export default function EstoqueLimpezaPage() {
           <SkeletonGrid count={6} />
         ) : error ? (
           <div className="col-span-full bg-gray-900 rounded-xl shadow p-6 border border-gray-800 text-center text-red-400">Erro ao carregar estoque</div>
-        ) : insumos && insumos.length > 0 ? (
-          insumos.map((item: any) => (
+        ) : pageItems && pageItems.length > 0 ? (
+          pageItems.map((item: any) => (
             <div key={item.id} className="bg-gray-900 rounded-xl shadow p-6 border border-gray-800 transition hover:scale-[1.02] hover:border-blue-500 focus-within:border-blue-500" tabIndex={0} aria-label={item.nome ?? item.categoria}>
               {editingId === item.id ? (
                 <div className="space-y-3">
@@ -229,6 +249,27 @@ export default function EstoqueLimpezaPage() {
           </div>
         )}
       </div>
+
+      {/* Paginação */}
+      {!loading && !error && filtered.length > 0 && (
+        <div className="mt-6 flex items-center justify-between">
+          <span className="text-sm text-gray-400">Página {page} de {totalPages}</span>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={page <= 1}
+              className="rounded-md bg-gray-800 hover:bg-gray-700 disabled:opacity-50 text-white px-3 py-1"
+              aria-label="Página anterior"
+            >Anterior</button>
+            <button
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              disabled={page >= totalPages}
+              className="rounded-md bg-gray-800 hover:bg-gray-700 disabled:opacity-50 text-white px-3 py-1"
+              aria-label="Próxima página"
+            >Próxima</button>
+          </div>
+        </div>
+      )}
     </DashboardLayout>
   );
 }

@@ -49,6 +49,25 @@ export default function FinanceiroPage() {
       .finally(() => setLoading(false));
   }, [refreshKey, lojaId]);
 
+  // Filtros/paginação client-side
+  const [filterTipo, setFilterTipo] = useState<string>("all");
+  const [filterCategoria, setFilterCategoria] = useState<string>("all");
+  const [fromDate, setFromDate] = useState<string>("");
+  const [toDate, setToDate] = useState<string>("");
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 12;
+  const filtered = lancamentos.filter((l) => {
+    if (filterTipo !== "all" && l.tipo !== filterTipo) return false;
+    if (filterCategoria !== "all" && l.categoria !== filterCategoria) return false;
+    const d = new Date(l.data);
+    if (fromDate && d < new Date(fromDate)) return false;
+    if (toDate && d > new Date(toDate)) return false;
+    return true;
+  });
+  const totalPages = Math.max(1, Math.ceil(filtered.length / itemsPerPage));
+  const pageItems = filtered.slice((page - 1) * itemsPerPage, page * itemsPerPage);
+  useEffect(() => { setPage(1); }, [filterTipo, filterCategoria, fromDate, toDate, lancamentos.length]);
+
   async function handleAdicionar(e: React.FormEvent) {
     e.preventDefault();
     if (!lojaId) {
@@ -145,6 +164,24 @@ export default function FinanceiroPage() {
         </div>
       </form>
 
+      {/* Filtros */}
+      <div className="mb-4 grid grid-cols-1 md:grid-cols-5 gap-3">
+        <select value={filterTipo} onChange={(e) => setFilterTipo(e.target.value)} className="rounded-md border border-gray-700 bg-gray-800 px-3 py-2 text-white focus:border-blue-600">
+          <option value="all">Tipo: todos</option>
+          <option value="entrada">Entrada</option>
+          <option value="saida">Saída</option>
+        </select>
+        <select value={filterCategoria} onChange={(e) => setFilterCategoria(e.target.value)} className="rounded-md border border-gray-700 bg-gray-800 px-3 py-2 text-white focus:border-blue-600">
+          <option value="all">Categoria: todas</option>
+          <option value="venda">Venda</option>
+          <option value="fixo">Fixo</option>
+          <option value="impostos">Impostos</option>
+          <option value="outros">Outros</option>
+        </select>
+        <input type="date" value={fromDate} onChange={(e) => setFromDate(e.target.value)} className="rounded-md border border-gray-700 bg-gray-800 px-3 py-2 text-white focus:border-blue-600" aria-label="De" />
+        <input type="date" value={toDate} onChange={(e) => setToDate(e.target.value)} className="rounded-md border border-gray-700 bg-gray-800 px-3 py-2 text-white focus:border-blue-600" aria-label="Até" />
+      </div>
+
       {/* Lista */}
       {loading ? (
         <SkeletonGrid count={4} />
@@ -164,7 +201,7 @@ export default function FinanceiroPage() {
               </tr>
             </thead>
             <tbody className="bg-gray-950 divide-y divide-gray-800">
-              {lancamentos.map((l) => (
+              {pageItems.map((l) => (
                 <tr key={l.id} className="hover:bg-gray-900">
                   <td className="px-4 py-3 text-sm text-gray-300">
                     {editingId === l.id ? (
@@ -226,6 +263,27 @@ export default function FinanceiroPage() {
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {/* Paginação */}
+      {!loading && !error && filtered.length > 0 && (
+        <div className="mt-6 flex items-center justify-between">
+          <span className="text-sm text-gray-400">Página {page} de {totalPages}</span>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={page <= 1}
+              className="rounded-md bg-gray-800 hover:bg-gray-700 disabled:opacity-50 text-white px-3 py-1"
+              aria-label="Página anterior"
+            >Anterior</button>
+            <button
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              disabled={page >= totalPages}
+              className="rounded-md bg-gray-800 hover:bg-gray-700 disabled:opacity-50 text-white px-3 py-1"
+              aria-label="Próxima página"
+            >Próxima</button>
+          </div>
         </div>
       )}
     </DashboardLayout>
