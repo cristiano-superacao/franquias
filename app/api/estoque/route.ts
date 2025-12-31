@@ -6,22 +6,40 @@ export async function GET(req: Request) {
     const url = new URL(req.url);
     const lojaIdParam = url.searchParams.get("lojaId");
     const lojaId = lojaIdParam ? Number(lojaIdParam) : null;
-
-    // Mock de dados de estoque (alimentos e limpeza)
-    const alimentos = [
-      { id: 1, nome: "Arroz", quantidade: 120, unidade: "kg" },
-      { id: 2, nome: "Feijão", quantidade: 85, unidade: "kg" },
-      { id: 3, nome: "Óleo", quantidade: 40, unidade: "L" },
-    ];
-
-    const limpeza = [
-      { id: 4, nome: "Detergente", quantidade: 50, unidade: "unidades" },
-      { id: 5, nome: "Desinfetante", quantidade: 30, unidade: "L" },
-      { id: 6, nome: "Álcool Gel", quantidade: 25, unidade: "L" },
-    ];
+    // Busca no banco por categorias
+    const whereBase = lojaId ? { loja_id: lojaId } : {};
+    const alimentos = await prisma.itemEstoque.findMany({
+      where: { ...whereBase, categoria: "alimento" as any },
+      orderBy: { nome: "asc" },
+    }).catch(() => []);
+    const limpeza = await prisma.itemEstoque.findMany({
+      where: { ...whereBase, categoria: "limpeza" as any },
+      orderBy: { nome: "asc" },
+    }).catch(() => []);
 
     return NextResponse.json({ alimentos, limpeza });
   } catch (err) {
     return NextResponse.json({ error: "Falha ao listar estoque" }, { status: 500 });
+  }
+}
+
+export async function POST(req: Request) {
+  try {
+    const body = await req.json();
+    const loja_id = Number(body?.loja_id);
+    const nome = String(body?.nome || "").trim();
+    const categoria = String(body?.categoria || "").trim();
+    const quantidade = Number(body?.quantidade || 0);
+    const unidade = String(body?.unidade || "").trim();
+
+    if (!loja_id || !nome || !categoria || !unidade)
+      return NextResponse.json({ error: "Dados inválidos" }, { status: 400 });
+
+    const created = await prisma.itemEstoque.create({
+      data: { loja_id, nome, categoria: categoria as any, quantidade, unidade },
+    });
+    return NextResponse.json({ ok: true, item: created }, { status: 201 });
+  } catch (err) {
+    return NextResponse.json({ error: "Falha ao criar item" }, { status: 500 });
   }
 }

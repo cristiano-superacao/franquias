@@ -9,7 +9,7 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("RAILWAY_DATABASE_URL")
-  schemas  = ["public", "franquias", "caixa", "metas"]
+  schemas  = ["public", "franquias", "caixa", "metas", "estoque", "financeiro"]
 }
 
 model User {
@@ -82,4 +82,51 @@ enum CategoriaMovimentacao {
   venda
   fixo
   @@schema("caixa")
+}
+
+// ESTOQUE
+model ItemEstoque {
+  id        Int      @id @default(autoincrement())
+  loja      Loja     @relation(fields: [loja_id], references: [id])
+  loja_id   Int
+  nome      String
+  categoria CategoriaEstoque
+  quantidade Int     @default(0)
+  unidade   String   // ex.: kg, L, un
+  updatedAt DateTime @updatedAt
+  @@schema("estoque")
+}
+
+enum CategoriaEstoque {
+  alimento
+  limpeza
+  @@schema("estoque")
+}
+
+// FINANCEIRO
+model LancamentoFinanceiro {
+  id         Int      @id @default(autoincrement())
+  loja       Loja     @relation(fields: [loja_id], references: [id])
+  loja_id    Int
+  tipo       TipoFinanceiro
+  categoria  CategoriaFinanceiro
+  valor      Decimal  @db.Decimal(10,2)
+  data       DateTime @default(now())
+  descricao  String?
+  createdAt  DateTime @default(now())
+  @@schema("financeiro")
+}
+
+enum TipoFinanceiro {
+  entrada
+  saida
+  @@schema("financeiro")
+}
+
+enum CategoriaFinanceiro {
+  venda
+  fixo
+  impostos
+  outros
+  @@schema("financeiro")
 }
