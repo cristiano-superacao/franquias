@@ -1,6 +1,3 @@
-// Prisma Schema para Gestão de Franquias
-// Banco: PostgreSQL
-
 generator client {
   provider        = "prisma-client-js"
   previewFeatures = ["multiSchema"]
@@ -9,7 +6,7 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("RAILWAY_DATABASE_URL")
-  schemas  = ["public", "franquias", "caixa", "metas", "estoque", "financeiro"]
+  schemas  = ["caixa", "estoque", "financeiro", "franquias", "metas", "public"]
 }
 
 model User {
@@ -20,61 +17,94 @@ model User {
   role      String   @default("user")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
   @@schema("public")
 }
 
 model Loja {
-  id                      Int      @id @default(autoincrement())
-  nome                    String
-  meta_venda              Decimal  @db.Decimal(10,2)
-  meta_consumo_limpeza    Decimal  @db.Decimal(10,2)
-  porcentagem_comissao    Decimal  @db.Decimal(5,2)
-  movimentacoes           Movimentacao[]
-  metas                   Meta[]
-  vendas                  Venda[]
-  itens                   ItemEstoque[]
-  lancamentos             LancamentoFinanceiro[]
+  id                   Int                    @id @default(autoincrement())
+  nome                 String
+  meta_venda           Decimal                @db.Decimal(10, 2)
+  meta_consumo_limpeza Decimal                @db.Decimal(10, 2)
+  porcentagem_comissao Decimal                @db.Decimal(5, 2)
+  movimentacoes        Movimentacao[]
+  vendas               Venda[]
+  itens                ItemEstoque[]
+  lancamentos          LancamentoFinanceiro[]
+  metas                Meta[]
+
   @@schema("franquias")
 }
 
 model Movimentacao {
-  id         Int      @id @default(autoincrement())
-  loja       Loja     @relation(fields: [loja_id], references: [id])
-  loja_id    Int
-  tipo       TipoMovimentacao
-  categoria  CategoriaMovimentacao
-  valor      Decimal  @db.Decimal(10,2)
-  data       DateTime @default(now())
+  id        Int                   @id @default(autoincrement())
+  loja_id   Int
+  tipo      TipoMovimentacao
+  categoria CategoriaMovimentacao
+  valor     Decimal               @db.Decimal(10, 2)
+  data      DateTime              @default(now())
+  loja      Loja                  @relation(fields: [loja_id], references: [id])
+
   @@schema("caixa")
 }
 
 model Venda {
   id          Int      @id @default(autoincrement())
-  loja        Loja     @relation(fields: [loja_id], references: [id])
   loja_id     Int
   numero      String
   dataEmissao DateTime
-  valor       Decimal  @db.Decimal(10,2)
+  valor       Decimal  @db.Decimal(10, 2)
   categoria   String?
   createdAt   DateTime @default(now())
+  loja        Loja     @relation(fields: [loja_id], references: [id])
+
   @@schema("caixa")
 }
 
 model Meta {
+  id        Int      @id @default(autoincrement())
+  loja_id   Int
+  nome      String
+  meta      Decimal  @db.Decimal(10, 2)
+  realizado Decimal  @default(0) @db.Decimal(10, 2)
+  periodo   String
+  updatedAt DateTime @updatedAt
+  loja      Loja     @relation(fields: [loja_id], references: [id])
+
+  @@schema("metas")
+}
+
+model ItemEstoque {
   id         Int      @id @default(autoincrement())
-  loja       Loja     @relation(fields: [loja_id], references: [id])
   loja_id    Int
   nome       String
-  meta       Decimal  @db.Decimal(10,2)
-  realizado  Decimal  @db.Decimal(10,2) @default(0)
-  periodo    String   // ex.: "2025-12"
-  updatedAt  DateTime @updatedAt
-  @@schema("metas")
+  categoria  String
+  quantidade Int      @default(0)
+  unidade    String
+  updatedAt  DateTime @default(now()) @updatedAt @db.Timestamptz(6)
+  loja       Loja     @relation(fields: [loja_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@schema("estoque")
+}
+
+model LancamentoFinanceiro {
+  id        Int      @id @default(autoincrement())
+  loja_id   Int
+  tipo      String
+  categoria String
+  valor     Decimal  @db.Decimal(10, 2)
+  data      DateTime @default(now()) @db.Timestamptz(6)
+  descricao String?
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  loja      Loja     @relation(fields: [loja_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@schema("financeiro")
 }
 
 enum TipoMovimentacao {
   entrada
   saida
+
   @@schema("caixa")
 }
 
@@ -83,52 +113,6 @@ enum CategoriaMovimentacao {
   limpeza
   venda
   fixo
+
   @@schema("caixa")
-}
-
-// ESTOQUE
-model ItemEstoque {
-  id        Int      @id @default(autoincrement())
-  loja      Loja     @relation(fields: [loja_id], references: [id])
-  loja_id   Int
-  nome      String
-  categoria CategoriaEstoque
-  quantidade Int     @default(0)
-  unidade   String   // ex.: kg, L, un
-  updatedAt DateTime @updatedAt
-  @@schema("estoque")
-}
-
-enum CategoriaEstoque {
-  alimento
-  limpeza
-  @@schema("estoque")
-}
-
-// FINANCEIRO
-model LancamentoFinanceiro {
-  id         Int      @id @default(autoincrement())
-  loja       Loja     @relation(fields: [loja_id], references: [id])
-  loja_id    Int
-  tipo       TipoFinanceiro
-  categoria  CategoriaFinanceiro
-  valor      Decimal  @db.Decimal(10,2)
-  data       DateTime @default(now())
-  descricao  String?
-  createdAt  DateTime @default(now())
-  @@schema("financeiro")
-}
-
-enum TipoFinanceiro {
-  entrada
-  saida
-  @@schema("financeiro")
-}
-
-enum CategoriaFinanceiro {
-  venda
-  fixo
-  impostos
-  outros
-  @@schema("financeiro")
 }
