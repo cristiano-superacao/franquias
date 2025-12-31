@@ -16,6 +16,7 @@ export default function AdminLojasPage() {
   }, []);
 
   const { data: lojas, loading, error } = useFetch<any[]>("/api/lojas");
+  const [query, setQuery] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [nome, setNome] = useState("");
   const [metaVenda, setMetaVenda] = useState("");
@@ -152,6 +153,18 @@ export default function AdminLojasPage() {
             </button>
           </div>
 
+          {/* Filtro/Busca por loja */}
+          <div className="mb-6">
+            <label className="text-sm text-gray-300" htmlFor="buscaLoja">Buscar loja</label>
+            <input
+              id="buscaLoja"
+              value={query}
+              onChange={(e)=>setQuery(e.target.value)}
+              placeholder="Digite parte do nome..."
+              className="mt-2 w-full max-w-md rounded-md border border-gray-700 bg-gray-800 px-3 py-2 text-white placeholder:text-gray-400 focus:border-blue-600 focus:ring-blue-600"
+            />
+          </div>
+
           {showForm && (
             <form onSubmit={handleCreateLoja} className="mb-6 grid grid-cols-1 md:grid-cols-4 gap-4 bg-gray-900 rounded-xl border border-gray-800 p-4">
               <div>
@@ -179,8 +192,9 @@ export default function AdminLojasPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {loading ? (
               <SkeletonGrid count={6} />
-            ) : (lojas && lojas.length > 0 ? (
-              lojas.map(loja => (
+            ) : (
+              (lojas && (lojas.length > 0)) ? (
+              (lojas.filter(l => l.nome?.toLowerCase().includes(query.toLowerCase()))).map(loja => (
                 <div key={loja.id} className="bg-gray-900 rounded-xl shadow p-6 border border-gray-800 transition hover:scale-[1.03] hover:border-blue-500 focus-within:border-blue-500" tabIndex={0} aria-label={loja.nome}>
                   <h2 className="text-lg font-bold text-blue-400 mb-2">{loja.nome}</h2>
                   <div className="text-gray-400 mb-2">Meta de Venda: <span className="text-white font-bold">{formatCurrency(loja.meta_venda)}</span></div>

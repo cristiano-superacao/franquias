@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
 import { prisma } from "../../../../lib/db";
 
-export async function PUT(req: Request, { params }: { params: { id: string } }) {
+export async function PUT(req: Request, ctx: { params: Promise<{ id: string }> }) {
   try {
-    const id = Number(params.id);
+    const { id: idStr } = await ctx.params;
+    const id = Number(idStr);
     if (!Number.isFinite(id)) return NextResponse.json({ error: "ID inválido" }, { status: 400 });
     const body = await req.json();
     const data: any = {};
@@ -19,9 +20,10 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
   }
 }
 
-export async function DELETE(_req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(_req: Request, ctx: { params: Promise<{ id: string }> }) {
   try {
-    const id = Number(params.id);
+    const { id: idStr } = await ctx.params;
+    const id = Number(idStr);
     if (!Number.isFinite(id)) return NextResponse.json({ error: "ID inválido" }, { status: 400 });
     await prisma.loja.delete({ where: { id } });
     return NextResponse.json({ ok: true });
