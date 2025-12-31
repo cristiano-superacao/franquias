@@ -81,6 +81,8 @@ Front/
 5. `npm run prisma:generate` e `npx prisma db push`
 6. `npm run railway:up`
 
+> Dica: use o arquivo `.env.example` como referência e mantenha credenciais apenas nas variáveis do Railway.
+
 ## Backup
 - Requer `pg_dump` instalado (PostgreSQL client)
 - `npm run db:backup` gera dumps dos schemas `franquias`, `caixa`, `metas`, `public` em `backups/<data_hora>/`
