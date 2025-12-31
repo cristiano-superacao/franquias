@@ -55,3 +55,29 @@ export async function DELETE(req: Request) {
     return NextResponse.json({ error: "Falha ao remover lançamento" }, { status: 500 });
   }
 }
+
+export async function PUT(req: Request) {
+  try {
+    const body = await req.json();
+    const id = Number(body?.id);
+    if (!id) return NextResponse.json({ error: "ID inválido" }, { status: 400 });
+
+    const tipo = body?.tipo !== undefined ? String(body.tipo).trim() : undefined;
+    const categoria = body?.categoria !== undefined ? String(body.categoria).trim() : undefined;
+    const valor = body?.valor !== undefined ? Number(body.valor) : undefined;
+    const data = body?.data !== undefined ? new Date(body.data) : undefined;
+    const descricao = body?.descricao !== undefined ? String(body.descricao) : undefined;
+
+    const dataUpdate: any = {};
+    if (tipo !== undefined) dataUpdate.tipo = tipo as any;
+    if (categoria !== undefined) dataUpdate.categoria = categoria as any;
+    if (valor !== undefined) dataUpdate.valor = valor;
+    if (data !== undefined && !isNaN(data.getTime())) dataUpdate.data = data;
+    if (descricao !== undefined) dataUpdate.descricao = descricao;
+
+    const updated = await prisma.lancamentoFinanceiro.update({ where: { id }, data: dataUpdate });
+    return NextResponse.json({ ok: true, lancamento: updated });
+  } catch (err) {
+    return NextResponse.json({ error: "Falha ao atualizar lançamento" }, { status: 500 });
+  }
+}

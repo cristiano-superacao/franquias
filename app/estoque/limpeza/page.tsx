@@ -21,6 +21,9 @@ export default function EstoqueLimpezaPage() {
   const [nome, setNome] = useState("");
   const [quantidade, setQuantidade] = useState<number>(0);
   const [unidade, setUnidade] = useState("un");
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editNome, setEditNome] = useState<string>("");
+  const [editUnidade, setEditUnidade] = useState<string>("un");
 
   useEffect(() => {
     const raw = typeof window !== "undefined" ? window.localStorage.getItem("selectedLojaId") : null;
@@ -94,6 +97,33 @@ export default function EstoqueLimpezaPage() {
     }
   }
 
+  function startEdit(item: any) {
+    setEditingId(item.id);
+    setEditNome(item.nome ?? "");
+    setEditUnidade(item.unidade ?? "un");
+  }
+
+  async function saveEdit() {
+    if (!editingId) return;
+    try {
+      const res = await fetch("/api/estoque", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: editingId, nome: editNome, unidade: editUnidade }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        showToast(data.error || "Erro ao salvar", "error");
+        return;
+      }
+      setEditingId(null);
+      setRefreshKey((k) => k + 1);
+      showToast("Item atualizado", "success");
+    } catch {
+      showToast("Falha de rede", "error");
+    }
+  }
+
   return (
     <DashboardLayout>
       <h1 className="text-2xl font-bold mb-6">Estoque - Limpeza</h1>
@@ -141,9 +171,37 @@ export default function EstoqueLimpezaPage() {
         ) : insumos && insumos.length > 0 ? (
           insumos.map((item: any) => (
             <div key={item.id} className="bg-gray-900 rounded-xl shadow p-6 border border-gray-800 transition hover:scale-[1.02] hover:border-blue-500 focus-within:border-blue-500" tabIndex={0} aria-label={item.nome ?? item.categoria}>
-              <h2 className="text-lg font-bold text-blue-400 mb-2">{item.nome ?? item.categoria}</h2>
-              <div className="text-gray-400 mb-3">Quantidade: <span className="text-white font-bold">{item.quantidade ?? "-"} {item.unidade ?? ""}</span></div>
-              <div className="flex items-center gap-2">
+              {editingId === item.id ? (
+                <div className="space-y-3">
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={editNome}
+                      onChange={(e) => setEditNome(e.target.value)}
+                      className="rounded-md border border-gray-700 bg-gray-800 px-3 py-2 text-white flex-1"
+                      aria-label="Nome do item"
+                    />
+                    <select
+                      value={editUnidade}
+                      onChange={(e) => setEditUnidade(e.target.value)}
+                      className="rounded-md border border-gray-700 bg-gray-800 px-3 py-2 text-white"
+                      aria-label="Unidade"
+                    >
+                      <option value="un">un</option>
+                      <option value="L">L</option>
+                      <option value="kg">kg</option>
+                    </select>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button onClick={saveEdit} className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-3 rounded shadow transition active:scale-95">Salvar</button>
+                    <button onClick={() => setEditingId(null)} className="bg-gray-700 hover:bg-gray-800 text-white font-semibold py-2 px-3 rounded shadow transition active:scale-95">Cancelar</button>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <h2 className="text-lg font-bold text-blue-400 mb-2">{item.nome ?? item.categoria}</h2>
+                  <div className="text-gray-400 mb-3">Quantidade: <span className="text-white font-bold">{item.quantidade ?? "-"} {item.unidade ?? ""}</span></div>
+                  <div className="flex items-center gap-2">
                 <input
                   type="number"
                   min={0}
@@ -152,14 +210,17 @@ export default function EstoqueLimpezaPage() {
                   className="w-28 rounded-md border border-gray-700 bg-gray-800 px-3 py-2 text-white focus:border-blue-600 focus:ring-blue-600"
                   aria-label="Nova quantidade"
                 />
-                <button onClick={() => handleRegistrarSaida(item)} className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-3 rounded shadow transition active:scale-95 flex items-center gap-2" aria-label="Registrar Saída">
+                    <button onClick={() => handleRegistrarSaida(item)} className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-3 rounded shadow transition active:scale-95 flex items-center gap-2" aria-label="Registrar Saída">
                   <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 11l3 3L22 4M21 12v7a 2 2 0 01-2 2H5a 2 2 0 01-2-2V5a 2 2 0 012-2h11"/></svg>
                   Saída
-                </button>
-                <button onClick={() => handleExcluir(item.id)} className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-3 rounded shadow transition active:scale-95" aria-label="Excluir">
+                    </button>
+                    <button onClick={() => startEdit(item)} className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-3 rounded shadow transition active:scale-95" aria-label="Editar">Editar</button>
+                    <button onClick={() => handleExcluir(item.id)} className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-3 rounded shadow transition active:scale-95" aria-label="Excluir">
                   Excluir
-                </button>
-              </div>
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
           ))
         ) : (

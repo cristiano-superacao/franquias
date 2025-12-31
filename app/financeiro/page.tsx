@@ -16,6 +16,12 @@ export default function FinanceiroPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [lancamentos, setLancamentos] = useState<any[]>([]);
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editTipo, setEditTipo] = useState<string>("entrada");
+  const [editCategoria, setEditCategoria] = useState<string>("venda");
+  const [editValor, setEditValor] = useState<number>(0);
+  const [editData, setEditData] = useState<string>("");
+  const [editDescricao, setEditDescricao] = useState<string>("");
 
   const [lojaId, setLojaId] = useState<number | null>(null);
   const [tipo, setTipo] = useState("entrada");
@@ -85,6 +91,36 @@ export default function FinanceiroPage() {
     }
   }
 
+  function startEdit(l: any) {
+    setEditingId(l.id);
+    setEditTipo(l.tipo);
+    setEditCategoria(l.categoria);
+    setEditValor(Number(l.valor));
+    setEditData(new Date(l.data).toISOString().slice(0, 10));
+    setEditDescricao(l.descricao ?? "");
+  }
+
+  async function saveEdit() {
+    if (!editingId) return;
+    try {
+      const res = await fetch("/api/financeiro", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: editingId, tipo: editTipo, categoria: editCategoria, valor: editValor, data: editData, descricao: editDescricao }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        showToast(data.error || "Erro ao salvar edição", "error");
+        return;
+      }
+      setEditingId(null);
+      setRefreshKey((k) => k + 1);
+      showToast("Lançamento atualizado", "success");
+    } catch {
+      showToast("Falha de rede", "error");
+    }
+  }
+
   return (
     <DashboardLayout>
       <h1 className="text-2xl font-bold mb-6">Financeiro</h1>
@@ -130,13 +166,61 @@ export default function FinanceiroPage() {
             <tbody className="bg-gray-950 divide-y divide-gray-800">
               {lancamentos.map((l) => (
                 <tr key={l.id} className="hover:bg-gray-900">
-                  <td className="px-4 py-3 text-sm text-gray-300">{new Date(l.data).toLocaleDateString()}</td>
-                  <td className="px-4 py-3 text-sm text-gray-300">{l.tipo}</td>
-                  <td className="px-4 py-3 text-sm text-gray-300">{l.categoria}</td>
-                  <td className="px-4 py-3 text-sm text-gray-300">{l.descricao ?? ""}</td>
-                  <td className="px-4 py-3 text-sm text-right font-semibold text-white">{Number(l.valor).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</td>
-                  <td className="px-4 py-3 text-sm text-center">
-                    <button onClick={() => handleExcluir(l.id)} className="bg-red-600 hover:bg-red-700 text-white font-semibold py-1.5 px-3 rounded shadow-sm">Excluir</button>
+                  <td className="px-4 py-3 text-sm text-gray-300">
+                    {editingId === l.id ? (
+                      <input type="date" value={editData} onChange={(e) => setEditData(e.target.value)} className="rounded-md border border-gray-700 bg-gray-800 px-2 py-1 text-white w-36" />
+                    ) : (
+                      new Date(l.data).toLocaleDateString()
+                    )}
+                  </td>
+                  <td className="px-4 py-3 text-sm text-gray-300">
+                    {editingId === l.id ? (
+                      <select value={editTipo} onChange={(e) => setEditTipo(e.target.value)} className="rounded-md border border-gray-700 bg-gray-800 px-2 py-1 text-white">
+                        <option value="entrada">Entrada</option>
+                        <option value="saida">Saída</option>
+                      </select>
+                    ) : (
+                      l.tipo
+                    )}
+                  </td>
+                  <td className="px-4 py-3 text-sm text-gray-300">
+                    {editingId === l.id ? (
+                      <select value={editCategoria} onChange={(e) => setEditCategoria(e.target.value)} className="rounded-md border border-gray-700 bg-gray-800 px-2 py-1 text-white">
+                        <option value="venda">Venda</option>
+                        <option value="fixo">Fixo</option>
+                        <option value="impostos">Impostos</option>
+                        <option value="outros">Outros</option>
+                      </select>
+                    ) : (
+                      l.categoria
+                    )}
+                  </td>
+                  <td className="px-4 py-3 text-sm text-gray-300">
+                    {editingId === l.id ? (
+                      <input type="text" value={editDescricao} onChange={(e) => setEditDescricao(e.target.value)} className="rounded-md border border-gray-700 bg-gray-800 px-2 py-1 text-white w-48" />
+                    ) : (
+                      l.descricao ?? ""
+                    )}
+                  </td>
+                  <td className="px-4 py-3 text-sm text-right font-semibold text-white">
+                    {editingId === l.id ? (
+                      <input type="number" step={0.01} value={editValor} onChange={(e) => setEditValor(Number(e.target.value))} className="rounded-md border border-gray-700 bg-gray-800 px-2 py-1 text-white w-28 text-right" />
+                    ) : (
+                      Number(l.valor).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })
+                    )}
+                  </td>
+                  <td className="px-4 py-3 text-sm text-center space-x-2">
+                    {editingId === l.id ? (
+                      <>
+                        <button onClick={saveEdit} className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-1.5 px-3 rounded shadow-sm">Salvar</button>
+                        <button onClick={() => setEditingId(null)} className="bg-gray-700 hover:bg-gray-800 text-white font-semibold py-1.5 px-3 rounded shadow-sm">Cancelar</button>
+                      </>
+                    ) : (
+                      <>
+                        <button onClick={() => startEdit(l)} className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-1.5 px-3 rounded shadow-sm">Editar</button>
+                        <button onClick={() => handleExcluir(l.id)} className="bg-red-600 hover:bg-red-700 text-white font-semibold py-1.5 px-3 rounded shadow-sm">Excluir</button>
+                      </>
+                    )}
                   </td>
                 </tr>
               ))}
