@@ -10,8 +10,9 @@
   },
   "scripts": {
     "dev": "next dev",
+    "prebuild": "prisma generate",
     "build": "next build",
-    "start": "prisma migrate deploy || prisma db push && next start",
+    "start": "next start",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate deploy",
     "db:push": "prisma db push",
@@ -22,6 +23,8 @@
   },
   "dependencies": {
     "@prisma/client": "^5.18.0",
+    "bcryptjs": "^2.4.3",
+    "execa": "^9.4.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "next": "^16.1.1",

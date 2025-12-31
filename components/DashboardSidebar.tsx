@@ -12,7 +12,7 @@ export default function DashboardSidebar({ lojas, selectedLoja, onSelectLoja }: 
     <>
       {/* Botão de menu para mobile */}
       <button
-        className="md:hidden fixed top-4 left-4 z-30 bg-emerald-600 hover:bg-emerald-700 text-white rounded-full p-2 shadow-lg"
+        className="md:hidden fixed top-4 left-4 z-30 bg-blue-600 hover:bg-blue-700 text-white rounded-full p-2 shadow-lg"
         onClick={() => setOpen(true)}
         aria-label="Abrir menu"
       >
@@ -28,7 +28,7 @@ export default function DashboardSidebar({ lojas, selectedLoja, onSelectLoja }: 
         aria-label="Sidebar de lojas"
       >
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-800">
-          <span className="font-bold text-lg text-emerald-400">Lojas</span>
+          <span className="font-bold text-lg text-blue-400">Lojas</span>
           {/* Botão fechar para mobile */}
           <button
             className="md:hidden text-gray-400 hover:text-white"
@@ -43,8 +43,8 @@ export default function DashboardSidebar({ lojas, selectedLoja, onSelectLoja }: 
             <li>
               <button
                 className={`w-full text-left px-6 py-3 rounded-lg transition border-2
-                  ${selectedLoja === null ? "bg-gray-800 text-emerald-400 border-emerald-400" : "border-transparent"}
-                  hover:bg-gray-800 hover:border-emerald-400 hover:text-emerald-400 focus:border-emerald-400 focus:text-emerald-400 active:scale-95`}
+                  ${selectedLoja === null ? "bg-gray-800 text-blue-400 border-blue-400" : "border-transparent"}
+                  hover:bg-gray-800 hover:border-blue-400 hover:text-blue-400 focus:border-blue-400 focus:text-blue-400 active:scale-95`}
                 onClick={() => { onSelectLoja(null); setOpen(false); }}
                 tabIndex={0}
                 aria-label="Visão Consolidada"
@@ -52,12 +52,21 @@ export default function DashboardSidebar({ lojas, selectedLoja, onSelectLoja }: 
                 Visão Consolidada
               </button>
             </li>
+            {/* Ações rápidas abaixo do Consolidado */}
+            <li className="mt-2">
+              <div className="px-6 space-y-2">
+                <a href="/admin/lojas" className="block w-full text-left px-4 py-2 rounded-md bg-gray-800 hover:bg-gray-700 text-blue-300">Criar Loja</a>
+                <a href="/estoque/alimentos" className="block w-full text-left px-4 py-2 rounded-md bg-gray-800 hover:bg-gray-700 text-blue-300">Estoque</a>
+                <a href="/caixa/fluxo" className="block w-full text-left px-4 py-2 rounded-md bg-gray-800 hover:bg-gray-700 text-blue-300">Caixa</a>
+                <a href="/config/comissoes" className="block w-full text-left px-4 py-2 rounded-md bg-gray-800 hover:bg-gray-700 text-blue-300">Comissões</a>
+              </div>
+            </li>
             {lojas.map(loja => (
               <li key={loja.id}>
                 <button
                   className={`w-full text-left px-6 py-3 rounded-lg transition border-2
-                    ${selectedLoja === loja.id ? "bg-gray-800 text-emerald-400 border-emerald-400" : "border-transparent"}
-                    hover:bg-gray-800 hover:border-emerald-400 hover:text-emerald-400 focus:border-emerald-400 focus:text-emerald-400 active:scale-95`}
+                    ${selectedLoja === loja.id ? "bg-gray-800 text-blue-400 border-blue-400" : "border-transparent"}
+                    hover:bg-gray-800 hover:border-blue-400 hover:text-blue-400 focus:border-blue-400 focus:text-blue-400 active:scale-95`}
                   onClick={() => { onSelectLoja(loja.id); setOpen(false); }}
                   tabIndex={0}
                   aria-label={"Selecionar " + loja.nome}

@@ -32,18 +32,6 @@ export default function DashboardPage() {
     <DashboardLayout selectedLoja={selectedLoja} onSelectLoja={setSelectedLoja}>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Dashboard Super Admin</h1>
-        {user && (
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-gray-400">Olá, {user.username}</span>
-            <button
-              onClick={() => { logout(); window.location.href = "/login"; }}
-              className="bg-gray-800 hover:bg-gray-700 text-white text-sm py-2 px-4 rounded transition"
-              aria-label="Sair"
-            >
-              Sair
-            </button>
-          </div>
-        )}
       </div>
       {loadingKpis ? (
         <SkeletonGrid />
@@ -58,7 +46,7 @@ export default function DashboardPage() {
         )}
       </div>
       <div className="mt-8 flex justify-end">
-        <button className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-6 rounded shadow transition">Backup Banco</button>
+        <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded shadow transition">Backup Banco</button>
       </div>
     </DashboardLayout>
   );

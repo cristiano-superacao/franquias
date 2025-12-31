@@ -9,7 +9,7 @@
 
   /* Foco visível acessível */
   :focus-visible {
-    @apply outline-2 outline-emerald-400 outline-offset-2;
+    @apply outline-2 outline-blue-600 outline-offset-2;
   }
 }
 

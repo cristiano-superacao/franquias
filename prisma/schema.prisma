@@ -8,8 +8,19 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = env("RAILWAY_DATABASE_URL")
   schemas  = ["public", "franquias", "caixa", "metas"]
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  role      String   @default("user")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@schema("public")
 }
 
 model Loja {

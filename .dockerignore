@@ -1,0 +1,7 @@
+node_modules
+.next
+npm-debug.log
+.DS_Store
+archive/Front/node_modules
+archive/Front/.next
+archive/Front

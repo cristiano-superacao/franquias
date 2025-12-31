@@ -14,7 +14,7 @@ export default function AppHeader() {
     <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6">
       <div className="flex items-start gap-4">
         <div className="flex items-center gap-2">
-          <span className="inline-block h-6 w-6 rounded bg-emerald-600" aria-hidden="true" />
+          <span className="inline-block h-6 w-6 rounded bg-blue-600" aria-hidden="true" />
           <span className="text-white font-bold">Franquias</span>
         </div>
         <div className="mt-1">
