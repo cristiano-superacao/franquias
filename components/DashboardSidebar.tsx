@@ -73,8 +73,10 @@ export default function DashboardSidebar({ lojas, selectedLoja, onSelectLoja }: 
               <div className="px-6 space-y-2">
                 <a href="/admin/lojas" className="block w-full text-left px-4 py-2 rounded-md bg-gray-800 hover:bg-gray-700 text-blue-300">Criar Loja</a>
                 <a href="/estoque/alimentos" className="block w-full text-left px-4 py-2 rounded-md bg-gray-800 hover:bg-gray-700 text-blue-300">Estoque</a>
+                <a href="/financeiro" className="block w-full text-left px-4 py-2 rounded-md bg-gray-800 hover:bg-gray-700 text-blue-300">Financeiro</a>
                 <a href="/caixa/fluxo" className="block w-full text-left px-4 py-2 rounded-md bg-gray-800 hover:bg-gray-700 text-blue-300">Caixa</a>
                 <a href="/config/comissoes" className="block w-full text-left px-4 py-2 rounded-md bg-gray-800 hover:bg-gray-700 text-blue-300">Comissões</a>
+                <a href="/admin/tools" className="block w-full text-left px-4 py-2 rounded-md bg-gray-800 hover:bg-gray-700 text-blue-300">Admin Tools</a>
               </div>
             </li>
             {lojas.map(loja => (
