@@ -11,7 +11,7 @@ export async function POST(req: Request) {
     }
 
     // Persiste venda (schema caixa)
-    const venda = await prisma.venda.create({
+    const venda = await (prisma as any).venda.create({
       data: {
         numero,
         dataEmissao: new Date(dataEmissao),
@@ -27,7 +27,7 @@ export async function POST(req: Request) {
 }
 
 export async function GET() {
-  const vendas = await prisma.venda.findMany({ orderBy: { id: "desc" }, take: 50 });
+  const vendas = await (prisma as any).venda.findMany({ orderBy: { id: "desc" }, take: 50 });
   return NextResponse.json({ ok: true, vendas }, { status: 200 });
 }
 

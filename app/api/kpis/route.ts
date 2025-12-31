@@ -17,7 +17,7 @@ export async function GET(req: Request) {
     const now = new Date();
 
     // Vendas mês
-    const vendas = await prisma.venda.findMany({
+    const vendas = await (prisma as any).venda.findMany({
       where: lojaId ? { loja_id: lojaId } : {},
       orderBy: { id: "desc" },
       take: 500,
@@ -27,7 +27,7 @@ export async function GET(req: Request) {
       .reduce((sum: number, v: any) => sum + Number(v.valor || 0), 0);
 
     // Despesas (saídas) mês
-    const movs = await prisma.movimentacao.findMany({
+    const movs = await (prisma as any).movimentacao.findMany({
       where: lojaId ? { loja_id: lojaId } : {},
       orderBy: { data: "desc" },
       take: 500,
@@ -39,7 +39,7 @@ export async function GET(req: Request) {
     // Comissão (percentual da loja)
     let comPerc = 0;
     if (lojaId) {
-      const loja = await prisma.loja.findUnique({ where: { id: lojaId } });
+      const loja = await (prisma as any).loja.findUnique({ where: { id: lojaId } });
       comPerc = loja ? Number(loja.porcentagem_comissao || 0) : 0;
     }
     const comissaoMes = vendasMes * (comPerc / 100);
