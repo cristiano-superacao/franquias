@@ -24,7 +24,7 @@ export async function GET(request: Request) {
       const raw = await (prisma as any).$queryRawUnsafe(
         `SELECT table_schema, table_name
          FROM information_schema.tables
-         WHERE table_schema in ('franquias','caixa','metas')
+         WHERE table_schema in ('franquias','caixa','metas','estoque','financeiro','public')
            AND table_type='BASE TABLE'
          ORDER BY table_schema, table_name`
       );
@@ -34,18 +34,24 @@ export async function GET(request: Request) {
     }
 
     const schemas = {
+      public: tables.filter(t => t.table_schema === 'public').map(t => t.table_name),
       franquias: tables.filter(t => t.table_schema === 'franquias').map(t => t.table_name),
       caixa: tables.filter(t => t.table_schema === 'caixa').map(t => t.table_name),
       metas: tables.filter(t => t.table_schema === 'metas').map(t => t.table_name),
+      estoque: tables.filter(t => t.table_schema === 'estoque').map(t => t.table_name),
+      financeiro: tables.filter(t => t.table_schema === 'financeiro').map(t => t.table_name),
     };
 
     // contagens úteis
     let counts: any = {};
     try {
+      counts.users = await (prisma as any).user.count();
       counts.lojas = await (prisma as any).loja.count();
       counts.metas = await (prisma as any).meta.count();
       counts.movimentacoes = await (prisma as any).movimentacao.count();
       counts.vendas = await (prisma as any).venda.count();
+      counts.itensEstoque = await (prisma as any).itemEstoque.count();
+      counts.lancamentosFinanceiros = await (prisma as any).lancamentoFinanceiro.count();
     } catch {
       // ignora se tabelas não existem ainda
     }
