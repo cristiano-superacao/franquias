@@ -6,11 +6,13 @@ export function useFetch<T = any>(url: string) {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [retry, setRetry] = useState(0);
 
   const fetchData = useCallback(() => {
     const controller = new AbortController();
     setLoading(true);
     setError(null);
+    const timeout = setTimeout(() => controller.abort(), 8000);
     fetch(url, { signal: controller.signal })
       .then(async (res) => {
         if (!res.ok) {
@@ -28,13 +30,18 @@ export function useFetch<T = any>(url: string) {
           setError(null);
           return;
         }
-
+        // Requisições resilientes: uma nova tentativa rápida
+        if (retry < 1) {
+          setRetry((r) => r + 1);
+          setTimeout(fetchData, 400);
+          return;
+        }
         setError("Erro ao buscar dados");
       })
-      .finally(() => setLoading(false));
+      .finally(() => { clearTimeout(timeout); setLoading(false); });
 
     return () => controller.abort();
-  }, [url]);
+  }, [url, retry]);
 
   useEffect(() => {
     const cleanup = fetchData();

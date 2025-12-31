@@ -1,9 +1,10 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
-import DashboardSidebar from "../../components/DashboardSidebar";
+import DashboardLayout from "../../components/DashboardLayout";
 import { useFetch } from "../../hooks/useFetch";
 import { getSession, logout } from "../../lib/auth";
+import { SkeletonGrid, SkeletonChart } from "../../components/Skeleton";
 
 const KPICards = dynamic(() => import("../../components/KPICards"), { ssr: false });
 const MetasBarChart = dynamic(() => import("../../components/MetasBarChart"), { ssr: false });
@@ -28,59 +29,37 @@ export default function DashboardPage() {
   const { data: metasData, loading: loadingMetas } = useFetch<{ nome: string; meta: number; realizado: number }[]>(`/api/metas${lojaParam}`);
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white flex flex-col md:flex-row">
-      <DashboardSidebar
-        lojas={lojas || []}
-        selectedLoja={selectedLoja}
-        onSelectLoja={setSelectedLoja}
-      />
-      <main className="flex-1 p-6 pb-20 md:pb-6">
-        <div className="mx-auto w-full max-w-6xl">
-          <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-bold">Dashboard Super Admin</h1>
-            {user && (
-              <div className="flex items-center gap-4">
-                <span className="text-sm text-gray-400">Olá, {user.username}</span>
-                <button
-                  onClick={() => { logout(); window.location.href = "/login"; }}
-                  className="bg-gray-800 hover:bg-gray-700 text-white text-sm py-2 px-4 rounded transition"
-                  aria-label="Sair"
-                >
-                  Sair
-                </button>
-              </div>
-            )}
+    <DashboardLayout selectedLoja={selectedLoja} onSelectLoja={setSelectedLoja}>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Dashboard Super Admin</h1>
+        {user && (
+          <div className="flex items-center gap-4">
+            <span className="text-sm text-gray-400">Olá, {user.username}</span>
+            <button
+              onClick={() => { logout(); window.location.href = "/login"; }}
+              className="bg-gray-800 hover:bg-gray-700 text-white text-sm py-2 px-4 rounded transition"
+              aria-label="Sair"
+            >
+              Sair
+            </button>
           </div>
-          {loadingKpis ? (
-            <div className="text-gray-400">Carregando KPIs...</div>
-          ) : (
-            <KPICards kpis={kpis || []} />
-          )}
-          {loadingMetas ? (
-            <div className="text-gray-400">Carregando Metas...</div>
-          ) : (
-            <MetasBarChart data={metasData || []} />
-          )}
-          <div className="mt-8 flex justify-end">
-            <button className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-6 rounded shadow transition">Backup Banco</button>
-          </div>
-        </div>
-      </main>
-      {/* Bottom Bar para mobile */}
-      <nav className="md:hidden fixed bottom-0 left-0 w-full bg-gray-900 border-t border-gray-800 flex justify-around items-center h-16 z-30">
-        <button className="flex flex-col items-center text-xs text-gray-400 hover:text-emerald-400 focus:text-emerald-400 transition active:scale-95" aria-label="Menu">
-          <svg width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M3 12h18M3 6h18M3 18h18"/></svg>
-          Menu
-        </button>
-        <button className="flex flex-col items-center text-xs text-gray-400 hover:text-emerald-400 focus:text-emerald-400 transition active:scale-95" aria-label="Lançar Nota Fiscal">
-          <svg width="24" height="24" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/><path stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M8 12h8"/></svg>
-          Lançar NF
-        </button>
-        <button className="flex flex-col items-center text-xs text-gray-400 hover:text-emerald-400 focus:text-emerald-400 transition active:scale-95" aria-label="Backup Banco">
-          <svg width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M12 6v6l4 2"/></svg>
-          Backup
-        </button>
-      </nav>
-    </div>
+        )}
+      </div>
+      {loadingKpis ? (
+        <SkeletonGrid />
+      ) : (
+        <KPICards kpis={kpis || []} />
+      )}
+      <div className="mt-6">
+        {loadingMetas ? (
+          <SkeletonChart />
+        ) : (
+          <MetasBarChart data={metasData || []} />
+        )}
+      </div>
+      <div className="mt-8 flex justify-end">
+        <button className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-6 rounded shadow transition">Backup Banco</button>
+      </div>
+    </DashboardLayout>
   );
 }

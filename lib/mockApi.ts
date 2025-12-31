@@ -1,4 +1,4 @@
-import { lojas, movimentacoes, estoque } from "./mockData";
+import { lojas, movimentacoes, estoque, Movimentacao } from "./mockData";
 import { coerceNumber, formatCurrency, formatPercent } from "./format";
 
 function parseUrl(url: string) {
@@ -13,14 +13,39 @@ function filtraPorLoja<T extends { loja_id?: number; id?: number }>(items: T[], 
   return items.filter((i) => i.loja_id === lojaId || i.id === lojaId);
 }
 
+function loadLocalSales(): Movimentacao[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = window.localStorage.getItem("sales_submissions");
+    const arr = raw ? JSON.parse(raw) : [];
+    const mapped: Movimentacao[] = (Array.isArray(arr) ? arr : []).map((s, idx) => ({
+      id: 100000 + idx,
+      loja_id: s.lojaId ?? 0,
+      tipo: "entrada",
+      categoria: "venda",
+      valor: Number(s.valor) || 0,
+      data: s.dataEmissao || new Date().toISOString(),
+    }));
+    return mapped;
+  } catch {
+    return [];
+  }
+}
+
+function getMovs(lojaId: number | null) {
+  const locals = loadLocalSales();
+  const base = [...movimentacoes, ...locals];
+  return filtraPorLoja(base, lojaId);
+}
+
 function somaVendas(lojaId: number | null) {
-  return filtraPorLoja(movimentacoes, lojaId)
+  return getMovs(lojaId)
     .filter((m) => m.categoria === "venda" && m.tipo === "entrada")
     .reduce((acc, m) => acc + coerceNumber(m.valor, 0), 0);
 }
 
 function somaSaidas(lojaId: number | null) {
-  return filtraPorLoja(movimentacoes, lojaId)
+  return getMovs(lojaId)
     .filter((m) => m.tipo === "saida")
     .reduce((acc, m) => acc + coerceNumber(m.valor, 0), 0);
 }
@@ -33,7 +58,7 @@ export async function mockApiFetch(url: string): Promise<unknown | null> {
   }
 
   if (pathname === "/api/movimentacoes") {
-    return filtraPorLoja(movimentacoes, lojaId);
+    return getMovs(lojaId);
   }
 
   if (pathname === "/api/estoque") {

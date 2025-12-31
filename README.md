@@ -6,8 +6,8 @@ Plataforma moderna para gestão de franquias, desenvolvida com Next.js (App Rout
 ---
 
 ## Tecnologias Utilizadas
-- Next.js 14+ (App Router)
-- React 18+
+- Next.js 16 (App Router)
+- React 19
 - Tailwind CSS
 - TypeScript
 - Recharts (gráficos)
@@ -66,17 +66,25 @@ Front/
 
 ---
 
-## Como Rodar o Projeto
-1. Instale as dependências:
-   ```bash
-   npm install
-   ```
-2. Execute o build estático:
-   ```bash
-   npm run build && npx next export
-   ```
-3. O conteúdo exportado estará na pasta `out/` para deploy estático (ex: GitHub Pages).
+## Scripts
+- `npm run dev`: ambiente de desenvolvimento
+- `npm run build`: build produção
+- `npm start`: iniciar servidor
+- `npm run db:backup`: backup modular por schema (requer `pg_dump`)
+- `npm run railway:login|init|up`: comandos auxiliares para deploy Railway
+
+## Deploy (Railway)
+1. `npm run railway:login` (login interativo)
+2. `npm run railway:init` (inicializa projeto)
+3. `railway add postgresql`
+4. Defina `DATABASE_URL` via `railway variables set` (copie da UI)
+5. `npm run prisma:generate` e `npx prisma db push`
+6. `npm run railway:up`
+
+## Backup
+- Requer `pg_dump` instalado (PostgreSQL client)
+- `npm run db:backup` gera dumps dos schemas `franquias`, `caixa`, `metas`, `public` em `backups/<data_hora>/`
 
 ---
 
-> Documentação gerada automaticamente — layout responsivo, profissional e atualizado.
+> Documentação atualizada — layout responsivo, profissional e APIs reais.

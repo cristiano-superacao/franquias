@@ -1,0 +1,74 @@
+// Prisma Schema para Gestão de Franquias
+// Banco: PostgreSQL
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["multiSchema"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  schemas  = ["public", "franquias", "caixa", "metas"]
+}
+
+model Loja {
+  id                      Int      @id @default(autoincrement())
+  nome                    String
+  meta_venda              Decimal  @db.Decimal(10,2)
+  meta_consumo_limpeza    Decimal  @db.Decimal(10,2)
+  porcentagem_comissao    Decimal  @db.Decimal(5,2)
+  movimentacoes           Movimentacao[]
+  metas                   Meta[]
+  vendas                  Venda[]
+  @@schema("franquias")
+}
+
+model Movimentacao {
+  id         Int      @id @default(autoincrement())
+  loja       Loja     @relation(fields: [loja_id], references: [id])
+  loja_id    Int
+  tipo       TipoMovimentacao
+  categoria  CategoriaMovimentacao
+  valor      Decimal  @db.Decimal(10,2)
+  data       DateTime @default(now())
+  @@schema("caixa")
+}
+
+model Venda {
+  id          Int      @id @default(autoincrement())
+  loja        Loja     @relation(fields: [loja_id], references: [id])
+  loja_id     Int
+  numero      String
+  dataEmissao DateTime
+  valor       Decimal  @db.Decimal(10,2)
+  categoria   String?
+  createdAt   DateTime @default(now())
+  @@schema("caixa")
+}
+
+model Meta {
+  id         Int      @id @default(autoincrement())
+  loja       Loja     @relation(fields: [loja_id], references: [id])
+  loja_id    Int
+  nome       String
+  meta       Decimal  @db.Decimal(10,2)
+  realizado  Decimal  @db.Decimal(10,2) @default(0)
+  periodo    String   // ex.: "2025-12"
+  updatedAt  DateTime @updatedAt
+  @@schema("metas")
+}
+
+enum TipoMovimentacao {
+  entrada
+  saida
+  @@schema("caixa")
+}
+
+enum CategoriaMovimentacao {
+  alimento
+  limpeza
+  venda
+  fixo
+  @@schema("caixa")
+}
