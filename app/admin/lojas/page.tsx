@@ -205,7 +205,7 @@ export default function AdminLojasPage() {
                   <div className="text-gray-400 mb-2">Meta de Venda: <span className="text-white font-bold">{formatCurrency(loja.meta_venda)}</span></div>
                   <div className="text-gray-400 mb-2">Comissão: <span className="text-white font-bold">{formatPercent(loja.porcentagem_comissao)}</span></div>
                   <div className="mt-4 flex gap-3">
-                    <button onClick={()=>startEdit(loja)} className="bg-sky-600 hover:bg-sky-700 text-white font-bold py-2 px-4 rounded shadow transition active:scale-95" aria-label="Editar Loja">Editar</button>
+                    <button onClick={()=>startEdit(loja)} className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow transition active:scale-95" aria-label="Editar Loja">Editar</button>
                     <button onClick={()=>handleDeleteLoja(loja.id)} className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded shadow transition active:scale-95" aria-label="Excluir Loja">Excluir</button>
                   </div>
                   {editingId === loja.id && (

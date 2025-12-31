@@ -234,7 +234,7 @@ export default function EstoqueLimpezaPage() {
                   <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 11l3 3L22 4M21 12v7a 2 2 0 01-2 2H5a 2 2 0 01-2-2V5a 2 2 0 012-2h11"/></svg>
                   Saída
                     </button>
-                    <button onClick={() => startEdit(item)} className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-3 rounded shadow transition active:scale-95" aria-label="Editar">Editar</button>
+                    <button onClick={() => startEdit(item)} className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-3 rounded shadow transition active:scale-95" aria-label="Editar">Editar</button>
                     <button onClick={() => handleExcluir(item.id)} className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-3 rounded shadow transition active:scale-95" aria-label="Excluir">
                   Excluir
                     </button>

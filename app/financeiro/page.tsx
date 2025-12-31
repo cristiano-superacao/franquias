@@ -254,7 +254,7 @@ export default function FinanceiroPage() {
                       </>
                     ) : (
                       <>
-                        <button onClick={() => startEdit(l)} className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-1.5 px-3 rounded shadow-sm">Editar</button>
+                        <button onClick={() => startEdit(l)} className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-1.5 px-3 rounded shadow-sm">Editar</button>
                         <button onClick={() => handleExcluir(l.id)} className="bg-red-600 hover:bg-red-700 text-white font-semibold py-1.5 px-3 rounded shadow-sm">Excluir</button>
                       </>
                     )}
