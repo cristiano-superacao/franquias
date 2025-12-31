@@ -3,13 +3,48 @@
 @tailwind utilities;
 
 @layer base {
+  * {
+    @apply border-gray-800;
+  }
+
   body {
-    @apply bg-gray-950 text-white;
+    @apply bg-gray-950 text-white antialiased;
   }
 
   /* Foco visível acessível */
   :focus-visible {
     @apply outline-2 outline-blue-600 outline-offset-2;
+  }
+
+  /* Scroll suave */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Remove scroll horizontal indesejado */
+  body {
+    overflow-x: hidden;
+  }
+}
+
+@layer utilities {
+  /* Utilitários personalizados para responsividade */
+  .container-responsive {
+    @apply mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl;
+  }
+
+  /* Transições suaves otimizadas */
+  .transition-smooth {
+    @apply transition-all duration-200 ease-in-out;
+  }
+
+  /* Sombras azuis para elementos interativos */
+  .shadow-blue {
+    box-shadow: 0 4px 14px 0 rgba(37, 99, 235, 0.15);
+  }
+
+  .shadow-blue-lg {
+    box-shadow: 0 10px 40px 0 rgba(37, 99, 235, 0.2);
   }
 }
 
@@ -29,3 +64,26 @@ html {
     font-size: 14px;
   }
 }
+
+/* Otimização de animações em dispositivos que preferem movimento reduzido */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Melhoria de contraste para dark mode */
+@media (prefers-contrast: high) {
+  .bg-gray-900 {
+    @apply bg-gray-950;
+  }
+  .text-gray-400 {
+    @apply text-gray-300;
+  }
+}
+

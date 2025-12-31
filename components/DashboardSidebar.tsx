@@ -10,28 +10,44 @@ export default function DashboardSidebar({ lojas, selectedLoja, onSelectLoja }: 
   // Sidebar para desktop, drawer para mobile
   return (
     <>
+      {/* Overlay para mobile quando sidebar está aberto */}
+      {open && (
+        <div
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-10 md:hidden transition-opacity duration-300"
+          onClick={() => setOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
       {/* Botão de menu para mobile */}
       <button
-        className="md:hidden fixed top-4 left-4 z-30 bg-blue-600 hover:bg-blue-700 text-white rounded-full p-2 shadow-lg"
+        className="md:hidden fixed top-4 left-4 z-30 bg-blue-600 hover:bg-blue-700 text-white rounded-full p-3 shadow-lg transition-transform active:scale-95"
         onClick={() => setOpen(true)}
         aria-label="Abrir menu"
+        aria-expanded={open}
       >
-        <svg width="28" height="28" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        <svg width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
       </button>
 
       {/* Sidebar desktop e drawer mobile */}
       <aside
-        className={`bg-gray-900 text-white flex flex-col shadow-lg z-20 transition-all duration-300
-          fixed top-0 left-0 h-full w-64 md:relative md:w-64 md:h-auto md:shadow-none
+        className={`bg-gray-900 text-white flex flex-col shadow-xl z-20 transition-transform duration-300 ease-out
+          fixed top-0 left-0 h-full w-72 md:relative md:w-64 md:h-auto md:shadow-none
           ${open ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}
         role="navigation"
         aria-label="Sidebar de lojas"
       >
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-800">
-          <span className="font-bold text-lg text-blue-400">Lojas</span>
+          <div className="flex items-center gap-2">
+            <svg className="h-5 w-5 text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+              <polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+            <span className="font-bold text-lg text-blue-400">Lojas</span>
+          </div>
           {/* Botão fechar para mobile */}
           <button
-            className="md:hidden text-gray-400 hover:text-white"
+            className="md:hidden text-gray-400 hover:text-white transition-colors"
             onClick={() => setOpen(false)}
             aria-label="Fechar menu"
           >

@@ -34,15 +34,32 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   return (
     <ToastContext.Provider value={{ showToast }}>
       {children}
-      <div className="fixed top-4 right-4 z-50 flex flex-col gap-2 items-end">
+      <div 
+        className="fixed top-4 right-4 z-50 flex flex-col gap-2 items-end max-w-md w-full px-4 sm:px-0 pointer-events-none"
+        aria-live="polite"
+        aria-atomic="true"
+      >
         {toasts.map((toast) => (
           <div
             key={toast.id}
-            className={`px-4 py-2 rounded shadow-lg text-white animate-slide-in-down transition-all duration-300 ${toast.type === "success" ? "bg-blue-600" : "bg-red-600"}`}
+            className={`pointer-events-auto px-6 py-3 rounded-lg shadow-2xl text-white animate-slide-in-down transition-all duration-300 flex items-center gap-3 min-w-[280px] max-w-full ${
+              toast.type === "success" ? "bg-blue-600" : "bg-red-600"
+            }`}
             role="alert"
             aria-live="assertive"
           >
-            {toast.message}
+            <div className="flex-shrink-0">
+              {toast.type === "success" ? (
+                <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M9 11l3 3L22 4M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+                </svg>
+              ) : (
+                <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+              )}
+            </div>
+            <span className="text-sm font-medium flex-1">{toast.message}</span>
           </div>
         ))}
       </div>
