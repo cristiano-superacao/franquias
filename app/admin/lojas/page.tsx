@@ -133,7 +133,12 @@ export default function AdminLojasPage() {
             ) : (
               (lojas || []).map(loja => (
                 <li key={loja.id}>
-                  <button className="w-full text-left px-4 py-2 rounded-lg transition border-2 border-transparent hover:bg-gray-800 hover:border-blue-400 hover:text-blue-400 focus:border-blue-400 focus:text-blue-400 active:scale-95 mb-2" aria-label={"Selecionar " + loja.nome} tabIndex={0}>
+                  <button
+                    onClick={() => { try { localStorage.setItem("selectedLojaId", String(loja.id)); } catch {}; window.location.href = "/dashboard"; }}
+                    className="w-full text-left px-4 py-2 rounded-lg transition border-2 border-transparent hover:bg-gray-800 hover:border-blue-400 hover:text-blue-400 focus:border-blue-400 focus:text-blue-400 active:scale-95 mb-2"
+                    aria-label={"Selecionar " + loja.nome}
+                    tabIndex={0}
+                  >
                     {loja.nome}
                   </button>
                 </li>
