@@ -32,6 +32,8 @@ model Loja {
   movimentacoes           Movimentacao[]
   metas                   Meta[]
   vendas                  Venda[]
+  itens                   ItemEstoque[]
+  lancamentos             LancamentoFinanceiro[]
   @@schema("franquias")
 }
 
