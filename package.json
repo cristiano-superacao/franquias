@@ -11,7 +11,7 @@
   },
   "scripts": {
     "dev": "next dev",
-    "prebuild": "prisma generate",
+    "prebuild": "echo skip prisma generate",
     "build": "next build --no-turbo",
     "start": "next start",
     "prisma:generate": "prisma generate",

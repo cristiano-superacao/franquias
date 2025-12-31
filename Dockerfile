@@ -16,9 +16,6 @@ RUN npm ci
 # Copiar código
 COPY . .
 
-# Gerar Prisma Client antes do build
-RUN npx prisma generate
-
 # Build de produção (Next.js)
 RUN npm run build
 
