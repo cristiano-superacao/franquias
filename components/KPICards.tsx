@@ -1,14 +1,13 @@
-  return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+import React from "react";
 
 type KPICardsProps = {
   kpis: { label: string; value: string; icon?: React.ReactNode }[];
 };
-            className="bg-gray-900 rounded-xl shadow p-6 flex items-center gap-4 border border-gray-800 transition hover:scale-[1.03] hover:border-blue-500 focus-within:border-blue-500"
+
 const KPICards: React.FC<KPICardsProps> = React.memo(function KPICards({ kpis }) {
   const hasData = kpis && kpis.length > 0;
   return (
-            <div className="text-3xl text-blue-400" aria-hidden="true">{kpi.icon}</div>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
       {hasData ? (
         kpis.map((kpi, idx) => (
           <div
