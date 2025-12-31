@@ -1,0 +1,9 @@
+{
+  "name": "Franquias",
+  "short_name": "Franquias",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0b0f10",
+  "theme_color": "#CCE3DE",
+  "description": "Painel de gestão de franquias — dashboards e KPIs"
+}

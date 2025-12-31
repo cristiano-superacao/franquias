@@ -1,0 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Paleta base */
+    --color-brand: #CCE3DE;
+    --color-surface-950: #0B0F12;
+    --color-surface-900: #12171B;
+    --color-accent: #AECFCC; /* tom secundário próximo da brand */
+  }
+
+  body {
+    /* Fundo elegante com leve gradiente */
+    background: linear-gradient(180deg, var(--color-surface-950) 0%, var(--color-surface-900) 100%);
+    @apply text-white min-h-screen;
+  }
+
+  /* Foco visível acessível com a cor brand */
+  :focus-visible {
+    @apply outline-2 outline-offset-2;
+    outline-color: var(--color-brand);
+  }
+}
+
+/* Ajustes responsivos baseados em tamanho de tela para melhor legibilidade */
+html {
+  font-size: 16px;
+}
+
+@media (max-width: 640px) {
+  html {
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 420px) {
+  html {
+    font-size: 14px;
+  }
+}

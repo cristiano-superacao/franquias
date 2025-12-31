@@ -83,6 +83,11 @@ Front/
 
 > Dica: use o arquivo `.env.example` como referência e mantenha credenciais apenas nas variáveis do Railway.
 
+### Aviso sobre `Front/` (legado)
+- `Front/` é um diretório legado/alternativo do front. Não faça deploy a partir dele.
+- O deploy deve apontar para a raiz do projeto (onde ficam `app/` e APIs).
+- Para arquivar de vez, mova `Front/` para `archive/Front/` quando não houver arquivos abertos no editor.
+
 ## Backup
 - Requer `pg_dump` instalado (PostgreSQL client)
 - `npm run db:backup` gera dumps dos schemas `franquias`, `caixa`, `metas`, `public` em `backups/<data_hora>/`

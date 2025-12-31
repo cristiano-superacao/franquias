@@ -1,0 +1,8 @@
+# Normaliza line endings para evitar diffs só por CRLF no Windows
+* text=auto
+
+# Mantém os arquivos gerados em `out/` estáveis (LF)
+out/**/*.txt text eol=lf
+out/**/*.html text eol=lf
+out/**/*.js text eol=lf
+out/**/*.css text eol=lf
