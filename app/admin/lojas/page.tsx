@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useFetch } from "../../../hooks/useFetch";
 import { formatCurrency, formatPercent } from "../../../lib/format";
 import { getSession } from "../../../lib/auth";
 import Breadcrumbs from "../../../components/Breadcrumbs";
 import { SkeletonGrid } from "../../../components/Skeleton";
+import { useToast } from "../../../components/Toast";
 
 export default function AdminLojasPage() {
   // Verifica autenticação
@@ -15,6 +16,52 @@ export default function AdminLojasPage() {
   }, []);
 
   const { data: lojas, loading, error } = useFetch<any[]>("/api/lojas");
+  const [showForm, setShowForm] = useState(false);
+  const [nome, setNome] = useState("");
+  const [metaVenda, setMetaVenda] = useState("");
+  const [metaLimpeza, setMetaLimpeza] = useState("");
+  const [comissao, setComissao] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const { showToast } = useToast();
+
+  const canSubmit = useMemo(() => {
+    return nome.trim().length > 0 && Number(metaVenda) >= 0 && Number(metaLimpeza) >= 0 && Number(comissao) >= 0;
+  }, [nome, metaVenda, metaLimpeza, comissao]);
+
+  async function handleCreateLoja(e: React.FormEvent) {
+    e.preventDefault();
+    if (!canSubmit) {
+      showToast("Preencha os dados corretamente.", "error");
+      return;
+    }
+    setSubmitting(true);
+    try {
+      const res = await fetch("/api/lojas", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          nome,
+          meta_venda: Number(metaVenda),
+          meta_consumo_limpeza: Number(metaLimpeza),
+          porcentagem_comissao: Number(comissao),
+        }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({ error: "Erro" }));
+        showToast(data.error || "Falha ao criar loja.", "error");
+        return;
+      }
+      showToast("Loja criada com sucesso!", "success");
+      setShowForm(false);
+      setNome(""); setMetaVenda(""); setMetaLimpeza(""); setComissao("");
+      // Recarrega a página para atualizar a lista
+      setTimeout(() => { window.location.reload(); }, 300);
+    } catch {
+      showToast("Falha de rede ao criar loja.", "error");
+    } finally {
+      setSubmitting(false);
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gray-950 text-white flex flex-col md:flex-row">
@@ -41,14 +88,45 @@ export default function AdminLojasPage() {
       <main className="flex-1 p-6 pb-20 md:pb-6">
         <div className="mx-auto w-full max-w-6xl">
           <div className="mb-3"><Breadcrumbs /></div>
-          <h1 className="text-2xl font-bold mb-6">Gestão de Lojas</h1>
+          <div className="flex items-center justify-between mb-6">
+            <h1 className="text-2xl font-bold">Gestão de Lojas</h1>
+            <button onClick={() => setShowForm(s=>!s)} className="inline-flex items-center gap-2 rounded-md bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-2.5 text-white font-semibold shadow-sm hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600">
+              <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="8"/><path d="M12 9v6M9 12h6"/></svg>
+              Nova Loja
+            </button>
+          </div>
+
+          {showForm && (
+            <form onSubmit={handleCreateLoja} className="mb-6 grid grid-cols-1 md:grid-cols-4 gap-4 bg-gray-900 rounded-xl border border-gray-800 p-4">
+              <div>
+                <label className="text-sm text-gray-300" htmlFor="nome">Nome</label>
+                <input id="nome" value={nome} onChange={e=>setNome(e.target.value)} className="mt-2 w-full rounded-md border border-gray-700 bg-gray-800 px-3 py-2 text-white placeholder:text-gray-400 focus:border-blue-600 focus:ring-blue-600" placeholder="Ex.: Loja Centro" />
+              </div>
+              <div>
+                <label className="text-sm text-gray-300" htmlFor="metaVenda">Meta de Venda</label>
+                <input id="metaVenda" value={metaVenda} onChange={e=>setMetaVenda(e.target.value)} className="mt-2 w-full rounded-md border border-gray-700 bg-gray-800 px-3 py-2 text-white placeholder:text-gray-400 focus:border-blue-600 focus:ring-blue-600" placeholder="Ex.: 50000" />
+              </div>
+              <div>
+                <label className="text-sm text-gray-300" htmlFor="metaLimpeza">Meta Limpeza</label>
+                <input id="metaLimpeza" value={metaLimpeza} onChange={e=>setMetaLimpeza(e.target.value)} className="mt-2 w-full rounded-md border border-gray-700 bg-gray-800 px-3 py-2 text-white placeholder:text-gray-400 focus:border-blue-600 focus:ring-blue-600" placeholder="Ex.: 3000" />
+              </div>
+              <div>
+                <label className="text-sm text-gray-300" htmlFor="comissao">% Comissão</label>
+                <input id="comissao" value={comissao} onChange={e=>setComissao(e.target.value)} className="mt-2 w-full rounded-md border border-gray-700 bg-gray-800 px-3 py-2 text-white placeholder:text-gray-400 focus:border-blue-600 focus:ring-blue-600" placeholder="Ex.: 5" />
+              </div>
+              <div className="md:col-span-4 flex justify-end gap-3">
+                <button type="button" onClick={()=>setShowForm(false)} className="rounded-md border border-gray-700 px-4 py-2 text-gray-200 hover:bg-gray-800">Cancelar</button>
+                <button type="submit" disabled={!canSubmit || submitting} className="rounded-md bg-blue-600 px-4 py-2 text-white font-semibold hover:bg-blue-700 disabled:opacity-60">{submitting?"Salvando...":"Salvar"}</button>
+              </div>
+            </form>
+          )}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {loading ? (
               <SkeletonGrid count={6} />
             ) : (lojas && lojas.length > 0 ? (
               lojas.map(loja => (
-                <div key={loja.id} className="bg-gray-900 rounded-xl shadow p-6 border border-gray-800 transition hover:scale-[1.03] hover:border-emerald-500 focus-within:border-emerald-500" tabIndex={0} aria-label={loja.nome}>
-                  <h2 className="text-lg font-bold text-emerald-400 mb-2">{loja.nome}</h2>
+                <div key={loja.id} className="bg-gray-900 rounded-xl shadow p-6 border border-gray-800 transition hover:scale-[1.03] hover:border-blue-500 focus-within:border-blue-500" tabIndex={0} aria-label={loja.nome}>
+                  <h2 className="text-lg font-bold text-blue-400 mb-2">{loja.nome}</h2>
                   <div className="text-gray-400 mb-2">Meta de Venda: <span className="text-white font-bold">{formatCurrency(loja.meta_venda)}</span></div>
                   <div className="text-gray-400 mb-2">Comissão: <span className="text-white font-bold">{formatPercent(loja.porcentagem_comissao)}</span></div>
                   <button className="mt-4 bg-sky-600 hover:bg-sky-700 text-white font-bold py-2 px-4 rounded shadow transition active:scale-95" aria-label="Editar Loja">Editar</button>
@@ -68,7 +146,7 @@ export default function AdminLojasPage() {
           <svg width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M3 12h18M3 6h18M3 18h18"/></svg>
           Menu
         </button>
-        <button className="flex flex-col items-center text-xs text-gray-400 hover:text-emerald-400 focus:text-emerald-400 transition active:scale-95" aria-label="Nova Loja">
+        <button onClick={()=>setShowForm(true)} className="flex flex-col items-center text-xs text-gray-400 hover:text-blue-400 focus:text-blue-400 transition active:scale-95" aria-label="Nova Loja">
           <svg width="24" height="24" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/><path stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M12 8v8M8 12h8"/></svg>
           Nova Loja
         </button>
